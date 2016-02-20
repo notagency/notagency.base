@@ -14,13 +14,13 @@ class MaterialsDetail extends MaterialsList
         $arParams = parent::onPrepareComponentParams($arParams);
         $arParams['ELEMENTS_COUNT'] = 1;
         $arParams['PAGING'] = 'N';
-        if (array_key_exists($arParams['REQUST_ELEMENT_CODE'], $_REQUEST) && !empty($_REQUEST[$arParams['REQUST_ELEMENT_CODE']]))
+        if (array_key_exists($arParams['REQUEST_ELEMENT_CODE'], $_REQUEST) && !empty($_REQUEST[$arParams['REQUEST_ELEMENT_CODE']]))
         {
-            $arParams['ELEMENT_CODE'] = htmlspecialchars(trim($_REQUEST[$arParams['REQUST_ELEMENT_CODE']]));
+            $arParams['ELEMENT_CODE'] = htmlspecialchars(trim($_REQUEST[$arParams['REQUEST_ELEMENT_CODE']]));
         }
-        if (array_key_exists($arParams['REQUST_ELEMENT_ID'], $_REQUEST) && intval($_REQUEST[$arParams['REQUST_ELEMENT_ID']]))
+        if (array_key_exists($arParams['REQUEST_ELEMENT_ID'], $_REQUEST) && intval($_REQUEST[$arParams['REQUEST_ELEMENT_ID']]))
         {            
-            $arParams['ELEMENT_ID'] = intval($_REQUEST[$arParams['REQUST_ELEMENT_ID']]);
+            $arParams['ELEMENT_ID'] = intval($_REQUEST[$arParams['REQUEST_ELEMENT_ID']]);
         }
         return $arParams;
     }

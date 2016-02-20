@@ -33,14 +33,14 @@ if ($iblock = CIBlock::GetList([], $filter)->fetch())
 
 $arComponentParameters = CComponentUtil::GetComponentProps('notagency:materials.list', $arCurrentValues);
 
-$arComponentParameters['PARAMETERS']['REQUST_ELEMENT_CODE'] = array(
+$arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_CODE'] = array(
     'PARENT' => 'BASE',
     'NAME' => 'GET или POST переменная, в которой передается код элемента',
     'TYPE' => 'STRING',
     'DEFAULT' => 'element_code',
 );
 
-$arComponentParameters['PARAMETERS']['REQUST_ELEMENT_ID'] = array(
+$arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_ID'] = array(
     'PARENT' => 'BASE',
     'NAME' => 'GET или POST переменная, в которой передается id элемента',
     'TYPE' => 'STRING',

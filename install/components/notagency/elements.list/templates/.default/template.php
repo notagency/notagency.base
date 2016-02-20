@@ -9,6 +9,7 @@ if (!empty($arResult['ELEMENTS']))
 
         ?><div id="<?=$this->GetEditAreaId('iblock_element_' . $item['ID']);?>"><?
             ?><h1><?=$item['NAME'];?></h1><?
+            ?><p><?=$item['PREVIEW_TEXT'];?></p><?
         ?></div><?
     }
 }

@@ -159,14 +159,14 @@ $arComponentParameters = array(
 			'PARENT' => 'DATA_SOURCE',
 			'NAME' => GetMessage('NIK_ELEMENTS_LIST_SELECT_SECTIONS'),
 			'TYPE' => 'CHECKBOX',
-			'DEFAULT' => 'Y',
+			'DEFAULT' => 'N',
             'REFRESH' => 'Y',
 		),
         'CUSTOM_DATE_FORMAT' => array(
 			'PARENT' => 'DATA_SOURCE',
 			'NAME' => 'Особый формат даты',
 			'TYPE' => 'CHECKBOX',
-			'DEFAULT' => 'Y',
+			'DEFAULT' => 'N',
             'REFRESH' => 'Y',
 		),
         'SHOW_PANEL_BUTTONS' => array(

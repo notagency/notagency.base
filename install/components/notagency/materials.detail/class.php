@@ -3,7 +3,7 @@ namespace Notagency\Components;
 
 \CBitrixComponent::includeComponentClass('notagency:materials.list');
 
-class ElementsDetail extends ElementsList
+class MaterialsDetail extends MaterialsList
 {
     protected $checkParams = [
         'IBLOCK_CODE' => ['type' => 'string'],

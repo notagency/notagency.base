@@ -5,7 +5,7 @@ use Notagency\Base\ComponentsBase;
 
 if (!\Bitrix\Main\Loader::includeModule('notagency.base')) return false;
 
-class ElementsList extends ComponentsBase
+class MaterialsList extends ComponentsBase
 {
     const ENGLISH_ELEMENT_ACTIVE_PROPERTY = 'ACTIVE_EN';
     const ENGLISH_ELEMENT_NAME_PROPERTY = 'NAME_EN';

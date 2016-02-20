@@ -4,29 +4,13 @@ if(!defined('B_PROLOG_INCLUDED')||B_PROLOG_INCLUDED!==true)die();
 if(!CModule::IncludeModule('iblock'))
     return;
 
-
-//select iblocks
-$iblocks = [];
-$iblocksIds = [];
-$order = [
-    'SORT' => 'ASC',
-    'NAME' => 'ASC', 
-];
-$filter = [
-    'SITE_ID'=>SITE_ID, 
-    'TYPE' => $arCurrentValues['IBLOCK_TYPE'] != '-' ? $arCurrentValues['IBLOCK_TYPE'] : '',
-];
-$rs = CIBlock::GetList($order, $filter);
-while ($item = $rs->Fetch())
-{
-    $iblocksIds[$item['CODE']] = $item['ID'];
-    $iblocks[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
-}
-
 //select iblock's element's fields and properties
-$iblockId = !empty($iblocksIds[$arCurrentValues['IBLOCK_CODE']]) ? $iblocksIds[$arCurrentValues['IBLOCK_CODE']] : false;
-if ($iblockId)
+$filter = [
+    'CODE' => $arCurrentValues['IBLOCK_CODE']
+];
+if ($iblock = CIBlock::GetList([], $filter)->fetch())
 {
+    //select fields
     $fields = [];
     $rawFields = CIBlock::GetFields($iblockId);
     foreach ($rawFields as $fieldCode=>$field)
@@ -34,17 +18,7 @@ if ($iblockId)
         $fields[$fieldCode] = $field['NAME'];
     }
     
-    $sectionProperties = [];
-    $filter = [
-        'ENTITY_ID' => 'IBLOCK_' . $iblockId . '_SECTION',
-    ];
-    $rs = CUserTypeEntity::GetList([], $filter );
-    while($field = $rs->Fetch())
-    {
-        $sectionProperties[$field['FIELD_NAME']] = $field['FIELD_NAME'];
-    }
-
-    
+    //element properties
     $elementProperties = [];
     $filter = [
         'ACTIVE'=>'Y', 
@@ -57,7 +31,7 @@ if ($iblockId)
     }
 }
 
-$arComponentParameters = \CComponentUtil::GetComponentProps('nik:elements.list', $arCurrentValues);
+$arComponentParameters = CComponentUtil::GetComponentProps('notagency:elements.list', $arCurrentValues);
 
 $arComponentParameters['PARAMETERS']['ELEMENT_CODE'] = array(
     'PARENT' => 'BASE',

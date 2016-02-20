@@ -46,6 +46,7 @@ $iblockId = !empty($iblocksIds[$arCurrentValues['IBLOCK_CODE']]) ? $iblocksIds[$
 
 if ($iblockId)
 {
+    //select fields
     $fields = [];
     $rawFields = CIBlock::GetFields($iblockId);
     foreach ($rawFields as $fieldCode=>$field)
@@ -53,6 +54,7 @@ if ($iblockId)
         $fields[$fieldCode] = $field['NAME'];
     }
     
+    //select section properties
     $sectionProperties = [];
     $filter = [
         'ENTITY_ID' => 'IBLOCK_' . $iblockId . '_SECTION',
@@ -63,7 +65,7 @@ if ($iblockId)
         $sectionProperties[$field['FIELD_NAME']] = $field['FIELD_NAME'];
     }
 
-
+    //select element properties
     $elementProperties = [];
     $filter = [
         'ACTIVE'=>'Y', 

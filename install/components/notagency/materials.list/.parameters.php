@@ -153,7 +153,7 @@ $arComponentParameters = array(
 		),
         'FILTER_NAME' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('T_IBLOCK_FILTER'),
+			'NAME' => 'Название переменной в которой содержится массив фильтрации элементов инфоблока',
 			'TYPE' => 'STRING',
 			'DEFAULT' => '',
 		),

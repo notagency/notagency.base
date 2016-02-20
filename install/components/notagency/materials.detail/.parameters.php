@@ -31,13 +31,20 @@ if ($iblock = CIBlock::GetList([], $filter)->fetch())
     }
 }
 
-$arComponentParameters = CComponentUtil::GetComponentProps('notagency:elements.list', $arCurrentValues);
+$arComponentParameters = CComponentUtil::GetComponentProps('notagency:materials.list', $arCurrentValues);
 
-$arComponentParameters['PARAMETERS']['ELEMENT_CODE'] = array(
+$arComponentParameters['PARAMETERS']['REQUST_ELEMENT_CODE'] = array(
     'PARENT' => 'BASE',
-    'NAME' => 'Переменная, в которой передается код элемента',
+    'NAME' => 'GET или POST переменная, в которой передается код элемента',
     'TYPE' => 'STRING',
-    'DEFAULT' => '$_GET["element_code"]',
+    'DEFAULT' => 'element_code',
+);
+
+$arComponentParameters['PARAMETERS']['REQUST_ELEMENT_ID'] = array(
+    'PARENT' => 'BASE',
+    'NAME' => 'GET или POST переменная, в которой передается id элемента',
+    'TYPE' => 'STRING',
+    'DEFAULT' => 'element_id',
 );
 
 if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')

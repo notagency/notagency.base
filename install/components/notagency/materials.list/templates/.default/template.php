@@ -8,7 +8,7 @@ if (!empty($arResult['ELEMENTS']))
         $this->AddDeleteAction('iblock_element_' . $item['ID'], $item['DELETE_LINK'], CIBlock::GetArrayByID($arResult['IBLOCK']['ID'], 'ELEMENT_DELETE'), array('CONFIRM' => GetMessage('CT_BNI_ELEMENT_DELETE_CONFIRM')));
 
         ?><div id="<?=$this->GetEditAreaId('iblock_element_' . $item['ID']);?>"><?
-            ?><h1><?=$item['NAME'];?></h1><?
+            ?><h1><a href="<?=$item['DETAIL_PAGE_URL'];?>"><?=$item['NAME'];?></a></h1><?
             ?><p><?=$item['PREVIEW_TEXT'];?></p><?
         ?></div><?
     }

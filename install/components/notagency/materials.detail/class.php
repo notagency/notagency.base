@@ -1,7 +1,7 @@
 <?
 namespace Notagency\Components;
 
-\CBitrixComponent::includeComponentClass('notagency:elements.list');
+\CBitrixComponent::includeComponentClass('notagency:materials.list');
 
 class ElementsDetail extends ElementsList
 {
@@ -14,33 +14,115 @@ class ElementsDetail extends ElementsList
         $arParams = parent::onPrepareComponentParams($arParams);
         $arParams['ELEMENTS_COUNT'] = 1;
         $arParams['PAGING'] = 'N';
+        if (array_key_exists($arParams['REQUST_ELEMENT_CODE'], $_REQUEST) && !empty($_REQUEST[$arParams['REQUST_ELEMENT_CODE']]))
+        {
+            $arParams['ELEMENT_CODE'] = htmlspecialchars(trim($_REQUEST[$arParams['REQUST_ELEMENT_CODE']]));
+        }
+        if (array_key_exists($arParams['REQUST_ELEMENT_ID'], $_REQUEST) && intval($_REQUEST[$arParams['REQUST_ELEMENT_ID']]))
+        {            
+            $arParams['ELEMENT_ID'] = intval($_REQUEST[$arParams['REQUST_ELEMENT_ID']]);
+        }
         return $arParams;
     }
 
     protected function executeMain()
     {
-        if (!empty($this->arParams['ELEMENT_CODE']))
+        $filterInitialized = false;
+        if ($this->arParams['ELEMENT_ID'])
         {
-            $this->elementsFilter['CODE'] = htmlspecialcharsbx($this->arParams['ELEMENT_CODE']);
+            $this->elementsFilter['ID'] = $this->arParams['ELEMENT_ID'];
+            $filterInitialized = true;
         }
-        if (!empty($this->arParams['ELEMENT_ID']))
+        if ($this->arParams['ELEMENT_CODE'])
         {
-            $this->elementsFilter['ID'] = htmlspecialcharsbx($this->arParams['ELEMENT_ID']);
+            $this->elementsFilter['CODE'] = $this->arParams['ELEMENT_CODE'];
+            $filterInitialized = true;
         }
-        parent::executeMain();
-        $this->arResult['ELEMENT'] = $this->arResult['ELEMENTS'][0];
+        if ($filterInitialized)
+        {
+            parent::executeMain();
+            $this->arResult['ELEMENT'] = $this->arResult['ELEMENTS'][0];
+        }
         unset($this->arResult['ELEMENTS']);
     }
 
     protected function executeEpilog()
     {
         global $APPLICATION;
-        if ($this->arParams['INCLUDE_TITLE_INTO_CHAIN'] == 'Y') {
-            $name = $this->arResult['ELEMENT']['NAME'];
-            if (SITE_ID == 'en' && !empty($this->arResult['ELEMENT']['PROPERTIES'][self::ENGLISH_ELEMENT_NAME_PROPERTY]['VALUE'])) {
-                $name = $this->arResult['ELEMENT']['PROPERTIES'][self::ENGLISH_ELEMENT_NAME_PROPERTY]['VALUE'];
+
+        $includeIntoChain = $this->arParams['INCLUDE_INTO_CHAIN'];
+        
+        $chainFieldNames = explode('.', $this->arParams['INCLUDE_FIELD_INTO_CHAIN']);
+        $chainPropertyNames = explode('.', $this->arParams['INCLUDE_PROPERTY_INTO_CHAIN']);
+
+        $chainEntity = '';
+        switch ($includeIntoChain)
+        {
+            case 'FIELD':
+                foreach ($chainFieldNames as $chainFieldName)
+                {
+                    if (!array_key_exists($chainFieldName, $this->arResult['ELEMENT']))
+                    {
+                        continue;
+                    }
+                    if ($chainFieldName == 'DATE_ACTIVE_FROM' && $this->arResult['ELEMENT']['DISPLAY_ACTIVE_FROM'])
+                    {
+                        $chainEntity .= ' ' . $this->arResult['ELEMENT']['DISPLAY_ACTIVE_FROM'];
+                    }
+                    else
+                    {
+                        $chainEntity .= ' ' . $this->arResult['ELEMENT'][$chainFieldName];
+                    }
+                }
+                break;
+            case 'PROPERTY':
+                foreach ($chainPropertyNames as $chainPropertyName)
+                {
+                    if (!array_key_exists($chainPropertyName, $this->arResult['ELEMENT']['PROPERTIES']))
+                    {
+                        continue;
+                    }
+                    if (empty($this->arResult['ELEMENT']['PROPERTIES'][$chainPropertyName]['VALUE']))
+                    {
+                        continue;
+                    }
+
+
+                    $chainEntity .= ' ' . $this->arResult['ELEMENT']['PROPERTIES'][$chainPropertyName]['VALUE'];
+                }
+                break;
+        }
+        if (!empty($chainEntity))
+        {
+            $APPLICATION->AddChainItem(trim($chainEntity));
+        }
+    }
+    
+    public function showResult()
+    {
+        if ($is404 = empty($this->arResult['ELEMENT']))
+        {
+            $this->abortCache();
+            if ($this->arParams['SET_STATUS_404'] === 'Y')
+            {
+                $this->return404();
             }
-            $APPLICATION->AddChainItem($name, $this->arResult['ELEMENT']['DETAIL_PAGE_URL']);
+            if ($this->arParams['SHOW_404'] === 'Y')
+            {
+                global $APPLICATION;
+                $APPLICATION->RestartBuffer();
+                require \Bitrix\Main\Application::getDocumentRoot() . SITE_TEMPLATE_PATH . '/header.php';
+                require \Bitrix\Main\Application::getDocumentRoot() . '/404.php';
+            }
+            else
+            {
+                parent::showResult();
+            }
+        }
+        else
+        {
+            parent::showResult();
+
         }
     }
 }

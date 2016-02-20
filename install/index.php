@@ -42,46 +42,15 @@ class notagency_base extends CModule
     
     public function InstallFiles()
     {
-        //проверяем создана ли директория в которую будем ставить компоненты
-        CheckDirPath($_SERVER['DOCUMENT_ROOT'] . '/bitrix/components/notagency/');
-        //открываем директорию
-        if ($handle = @opendir(__DIR__ . '/components/notagency'))
-        {
-            //читаем директорию
-            while (($entity = readdir($handle)) !== false)
-            {
-                if ($entity == "." || $entity == "..")
-                    continue;
-
-                //создаем симлинк для того чтобы обносления после composer update сразу же применялись к компоненту
-                $this->_symlink (__DIR__ . '/components/notagency/' . $entity, $_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency/' . $entity);
-            }
-        }
+        //создаем симлинк для того чтобы обносления после composer update сразу же отображались на сайте
+        $this->_symlink (__DIR__ . '/components/notagency', $_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency');
         return true;
     }
     
     public function UnInstallFiles()
     {
-        //удаляем только те симлинки на компоненты, которые есть в данном модуле
-        if ($handle = @opendir(__DIR__ . '/components/notagency'))
-        {
-            //читаем директорию
-            while (($entity = readdir($handle)) !== false)
-            {
-                if ($entity == "." || $entity == "..")
-                    continue;
-                
-                if (
-                    Directory::isDirectoryExists(__DIR__ . '/components/notagency/' . $entity) 
-                    && Directory::isDirectoryExists($_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency/' . $entity)
-                )
-                {
-                    //удаляем симлинк
-                    $this->_unlink($_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency/' . $entity);
-                }
-            }
-            @rmdir($_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency/');
-        }
+        //удаляем симлинк
+        $this->_unlink($_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency');
         return true;
     }
     

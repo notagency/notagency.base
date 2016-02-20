@@ -38,7 +38,7 @@ final protected function componentsBase()
 	$this->includeModules();
 
 //проверка параметров компонента, указанных в массиве атрибута класса $checkParams
-//приватный метод.
+//приватный метод
 	$this->checkParams();
 
 //перезапуск буфера вывода, если аякс-запрос
@@ -66,7 +66,7 @@ final protected function componentsBase()
 		}
 
 //алиас для стандартного метода endResultCache()
-//публичный метод.
+//публичный метод
 		$this->writeCache();
 	}
 

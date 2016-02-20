@@ -3,20 +3,20 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 /** @var array $arCurrentValues */
 
 $arSorts = [
-    'ASC'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_ASC'), 
-    'DESC'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_DESC')
+    'ASC'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_ASC'), 
+    'DESC'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_DESC')
 ];
 $arSortFields = [
-    'ID'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FID'),
-    'NAME'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FNAME'),
-    'DATE_ACTIVE_FROM'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FACT'),
-    'SORT'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FSORT'),
+    'ID'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FID'),
+    'NAME'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FNAME'),
+    'DATE_ACTIVE_FROM'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FACT'),
+    'SORT'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FSORT'),
 ];
 
 $arSortSectionFields = [
-    'ID'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FID'),
-    'NAME'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FNAME'),
-    'SORT'=>GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_FSORT'),
+    'ID'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FID'),
+    'NAME'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FNAME'),
+    'SORT'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FSORT'),
 ];
 
 if(!CModule::IncludeModule('iblock'))
@@ -83,7 +83,7 @@ $arComponentParameters = array(
 	'PARAMETERS' => array(
 		'IBLOCK_TYPE' => array(
 			'PARENT' => 'BASE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_LIST_TYPE'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LIST_TYPE'),
 			'TYPE' => 'LIST',
 			'VALUES' => $arTypesEx,
 			'DEFAULT' => 'nik',
@@ -91,7 +91,7 @@ $arComponentParameters = array(
 		),
 		'IBLOCK_CODE' => array(
 			'PARENT' => 'BASE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_NEWS_LIST_CODE'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_NEWS_LIST_CODE'),
 			'TYPE' => 'LIST',
 			'VALUES' => $iblocks,
 			'REFRESH' => 'Y',
@@ -99,13 +99,13 @@ $arComponentParameters = array(
 		),
 		'ELEMENTS_COUNT' => array(
 			'PARENT' => 'BASE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_LIST_CONT'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LIST_CONT'),
 			'TYPE' => 'STRING',
 			'DEFAULT' => '20',
 		),
 		'ELEMENT_SORT_BY1' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBORD1'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBORD1'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DATE_ACTIVE_FROM',
 			'VALUES' => $arSortFields,
@@ -113,7 +113,7 @@ $arComponentParameters = array(
 		),
 		'ELEMENT_SORT_ORDER1' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBBY1'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBBY1'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DESC',
 			'VALUES' => $arSorts,
@@ -121,7 +121,7 @@ $arComponentParameters = array(
 		),
 		'ELEMENT_SORT_BY2' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBORD2'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBORD2'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'SORT',
 			'VALUES' => $arSortFields,
@@ -129,7 +129,7 @@ $arComponentParameters = array(
 		),
 		'ELEMENT_SORT_ORDER2' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBBY2'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBBY2'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'ASC',
 			'VALUES' => $arSorts,
@@ -165,7 +165,7 @@ $arComponentParameters = array(
             'REFRESH' => 'Y',
 		),
         'CUSTOM_DATE_FORMAT' => array(
-			'PARENT' => 'DATA_SOURCE',
+			'PARENT' => 'ADDITIONAL_SETTINGS',
 			'NAME' => 'Особый формат даты',
 			'TYPE' => 'CHECKBOX',
 			'DEFAULT' => 'N',
@@ -205,7 +205,7 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
         'SECTION_SORT_BY1' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBSORD1'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSORD1'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DATE_ACTIVE_FROM',
 			'VALUES' => $arSortSectionFields,
@@ -213,7 +213,7 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
 		'SECTION_SORT_ORDER1' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBSBY1'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSBY1'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DESC',
 			'VALUES' => $arSorts,
@@ -221,7 +221,7 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
 		'SECTION_SORT_BY2' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBSORD2'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSORD2'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'SORT',
 			'VALUES' => $arSortSectionFields,
@@ -229,7 +229,7 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
 		'SECTION_SORT_ORDER2' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_IBSBY2'),
+			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSBY2'),
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'ASC',
 			'VALUES' => $arSorts,
@@ -255,6 +255,6 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 if ($arCurrentValues['CUSTOM_DATE_FORMAT'] == 'Y')
 {
     $arComponentParameters['PARAMETERS'] = array_merge($arComponentParameters['PARAMETERS'], array(
-        'ACTIVE_DATE_FORMAT' => CIBlockParameters::GetDateFormat(GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_ACTIVE_DATE_FORMAT'), 'ADDITIONAL_SETTINGS'),
+        'ACTIVE_DATE_FORMAT' => CIBlockParameters::GetDateFormat(GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_ACTIVE_DATE_FORMAT'), 'ADDITIONAL_SETTINGS'),
     ));
 }

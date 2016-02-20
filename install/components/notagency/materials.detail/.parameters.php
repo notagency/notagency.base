@@ -4,48 +4,70 @@ if(!defined('B_PROLOG_INCLUDED')||B_PROLOG_INCLUDED!==true)die();
 if(!CModule::IncludeModule('iblock'))
     return;
 
-//select iblock's element's fields and properties
-$filter = [
-    'CODE' => $arCurrentValues['IBLOCK_CODE']
-];
-if ($iblock = CIBlock::GetList([], $filter)->fetch())
+if ($arCurrentValues['IBLOCK_CODE'] != '-')
 {
-    //select fields
-    $fields = [];
-    $rawFields = CIBlock::GetFields($iblockId);
-    foreach ($rawFields as $fieldCode=>$field)
-    {
-        $fields[$fieldCode] = $field['NAME'];
-    }
-    
-    //element properties
-    $elementProperties = [];
+    //select iblock's element's fields and properties
     $filter = [
-        'ACTIVE'=>'Y', 
-        'IBLOCK_ID'=> $iblockId,
+        'CODE' => $arCurrentValues['IBLOCK_CODE']
     ];
-    $rsProp = CIBlockProperty::GetList([], $filter);
-    while ($item = $rsProp->Fetch())
+    if ($iblock = CIBlock::GetList([], $filter)->fetch())
     {
-        $elementProperties[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
+        //select fields
+        $fields = [];
+        $rawFields = CIBlock::GetFields($iblockId);
+        foreach ($rawFields as $fieldCode=>$field)
+        {
+            $fields[$fieldCode] = $field['NAME'];
+        }
+
+        //element properties
+        $elementProperties = [];
+        $filter = [
+            'ACTIVE'=>'Y',
+            'IBLOCK_ID'=> $iblockId,
+        ];
+        $rsProp = CIBlockProperty::GetList([], $filter);
+        while ($item = $rsProp->Fetch())
+        {
+            $elementProperties[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
+        }
     }
 }
 
+
 $arComponentParameters = CComponentUtil::GetComponentProps('notagency:materials.list', $arCurrentValues);
 
-$arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_CODE'] = array(
+$arComponentParameters['PARAMETERS']['SELECT_ELEMENT_BY'] = array(
     'PARENT' => 'BASE',
-    'NAME' => 'GET или POST переменная, в которой передается код элемента',
-    'TYPE' => 'STRING',
-    'DEFAULT' => 'element_code',
+    'NAME' => 'Выбирать элемент по ID или по коду',
+    'TYPE' => 'LIST',
+    'VALUES' => [
+        'CODE' => 'по коду',
+        'ID' => 'по id',
+    ],
+    'DEFAULT' => 'CODE',
+    'REFRESH' => 'Y',
 );
 
-$arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_ID'] = array(
-    'PARENT' => 'BASE',
-    'NAME' => 'GET или POST переменная, в которой передается id элемента',
-    'TYPE' => 'STRING',
-    'DEFAULT' => 'element_id',
-);
+if ($arCurrentValues['SELECT_ELEMENT_BY_ID'] == 'Y')
+{
+    $arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_ID'] = array(
+        'PARENT' => 'BASE',
+        'NAME' => 'GET или POST переменная, в которой передается id элемента',
+        'TYPE' => 'STRING',
+        'DEFAULT' => 'element_id',
+    );
+}
+else
+{
+    $arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_CODE'] = array(
+        'PARENT' => 'BASE',
+        'NAME' => 'GET или POST переменная, в которой передается код элемента',
+        'TYPE' => 'STRING',
+        'DEFAULT' => 'element_code',
+    );
+}
+
 
 if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 {

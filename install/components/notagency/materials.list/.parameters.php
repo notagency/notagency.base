@@ -22,28 +22,30 @@ $arSortSectionFields = [
 if(!CModule::IncludeModule('iblock'))
     return;
 
-$arTypesEx = CIBlockParameters::GetIBlockTypes(array('-'=>' '));
+$iblockTypes = CIBlockParameters::GetIBlockTypes(array('-'=>' '));
 
-//select iblocks
-$iblocks = [];
-$iblocksIds = [];
-$order = [
-    'SORT' => 'ASC',
-    'NAME' => 'ASC', 
-];
-$filter = [
-    'TYPE' => $arCurrentValues['IBLOCK_TYPE'] != '-' ? $arCurrentValues['IBLOCK_TYPE'] : '',
-];
-$rs = CIBlock::GetList($order, $filter);
-while ($item = $rs->Fetch())
+if ($arCurrentValues['IBLOCK_TYPE'] != '-')
 {
-    $iblocksIds[$item['CODE']] = $item['ID'];
-    $iblocks[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
+	//select iblocks
+	$iblocks = [];
+	$iblocksIds = [];
+	$order = [
+		'SORT' => 'ASC',
+		'NAME' => 'ASC',
+	];
+	$filter = [
+		'TYPE' => $arCurrentValues['IBLOCK_TYPE'] != '-' ? $arCurrentValues['IBLOCK_TYPE'] : '',
+	];
+	$rs = CIBlock::GetList($order, $filter);
+	while ($item = $rs->Fetch())
+	{
+		$iblocksIds[$item['CODE']] = $item['ID'];
+		$iblocks[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
+	}
+
+	//select iblock's element's fields and properties
+	$iblockId = !empty($iblocksIds[$arCurrentValues['IBLOCK_CODE']]) ? $iblocksIds[$arCurrentValues['IBLOCK_CODE']] : false;
 }
-
-//select iblock's element's fields and properties
-$iblockId = !empty($iblocksIds[$arCurrentValues['IBLOCK_CODE']]) ? $iblocksIds[$arCurrentValues['IBLOCK_CODE']] : false;
-
 if ($iblockId)
 {
     //select fields
@@ -85,8 +87,7 @@ $arComponentParameters = array(
 			'PARENT' => 'BASE',
 			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LIST_TYPE'),
 			'TYPE' => 'LIST',
-			'VALUES' => $arTypesEx,
-			'DEFAULT' => 'nik',
+			'VALUES' => $iblockTypes,
 			'REFRESH' => 'Y',
 		),
 		'IBLOCK_CODE' => array(

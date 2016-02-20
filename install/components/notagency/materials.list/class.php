@@ -1,7 +1,8 @@
 <?
 namespace Notagency\Components;
 
-use Notagency\Base\ComponentsBase;
+use Notagency\Base\ComponentsBase,
+    Notagency\Base\Tools;
 
 if (!\Bitrix\Main\Loader::includeModule('notagency.base')) return false;
 
@@ -391,7 +392,7 @@ class MaterialsList extends ComponentsBase
                         }
                         if ($file = \CFile::GetFileArray($fileId))
                         {
-                            $file['DISPLAY_SIZE'] = $this->getFileSize($file['FILE_SIZE']);
+                            $file['DISPLAY_SIZE'] = Tools::formatFileSize($file['FILE_SIZE']);
                             $originalName = explode('.', $file['ORIGINAL_NAME']);
                             $file['FILE_EXTENSION'] = $originalName[count($originalName) - 1];
                             $file['FILE_NAME'] = str_replace('.' . $file['FILE_EXTENSION'], '', $originalName);
@@ -403,7 +404,7 @@ class MaterialsList extends ComponentsBase
                 {
                     if ($file = \CFile::GetFileArray($property['VALUE']))
                     {
-                        $file['DISPLAY_SIZE'] = $this->getFileSize($file['FILE_SIZE']);
+                        $file['DISPLAY_SIZE'] = Tools::formatFileSize($file['FILE_SIZE']);
                         list($file['FILE_NAME'], $file['FILE_EXTENSION']) = explode('.', $file['ORIGINAL_NAME']);
                         $property['VALUE_DETAILS'] = $file;
                     }
@@ -411,32 +412,6 @@ class MaterialsList extends ComponentsBase
             }
         }
         return $element;
-    }
-
-    /**
-     * Получить размер файла и единицы измерения
-     * @param int $size - размер файла в байтах
-     * @return array
-     */
-    protected function getFileSize($size)
-    {
-        $displaySize = [];
-        if(intval($size)> 1048576)
-        {
-            $displaySize["SIZE"]= round($size / 1048576,2);
-            $displaySize["UNIT"]= "Mb";
-        }
-        elseif(intval($size)> 1024)
-        {
-            $displaySize["SIZE"]= round($size / 1024,1);
-            $displaySize["UNIT"]= "Kb";
-        }
-        else
-        {
-            $displaySize["SIZE"]= $size;
-            $displaySize["UNIT"]= "b";
-        }
-        return $displaySize;
     }
 
     /**

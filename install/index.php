@@ -1,9 +1,7 @@
 <?php
 IncludeModuleLangFile(__FILE__);
 
-use Bitrix\Main\Loader,
-    Bitrix\Main\ModuleManager,
-    Bitrix\Main\IO\Directory;
+use Bitrix\Main\ModuleManager;
 
 class notagency_base extends CModule
 {

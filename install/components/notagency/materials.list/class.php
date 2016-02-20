@@ -56,11 +56,6 @@ class MaterialsList extends ComponentsBase
         return $arParams;
     }
 
-    public function setFilter($arFilter)
-    {
-        $this->elementsFilter = $arFilter;
-    }
-
     /**
      * @inheritdoc
      */

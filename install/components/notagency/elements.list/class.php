@@ -23,6 +23,7 @@ class ElementsList extends ComponentsBase
         $arParams = parent::onPrepareComponentParams($arParams);
         $arParams['IBLOCK_CODE'] = htmlspecialchars(trim($arParams['IBLOCK_CODE']));
         $arParams['SECTION_CODE'] = htmlspecialchars(trim($arParams['SECTION_CODE']));
+        $arParams['SECTION_ID'] = intval($arParams['SECTION_ID']);
 
         if (strlen($arParams['ELEMENT_SORT_BY1'])<=0) $arParams['ELEMENT_SORT_BY1'] = 'SORT';
         if ($arParams['ELEMENT_SORT_ORDER1']!='DESC') $arParams['ELEMENT_SORT_ORDER1']='ASC';
@@ -39,6 +40,7 @@ class ElementsList extends ComponentsBase
         if (strlen($arParams['SECTION_SORT_BY2'])<=0) $arParams['SECTION_SORT_BY2'] = 'ID';
         if ($arParams['SECTION_SORT_ORDER2']!='DESC') $arParams['SECTION_SORT_ORDER2']='ASC';
 
+        if ($arParams['PAGE']) $arParams['PAGE'] = intval($_GET['page']);
         if ($arParams['PAGING'] == 'Y')
         {
             $nav = \CDBResult::GetNavParams();
@@ -47,6 +49,8 @@ class ElementsList extends ComponentsBase
             //не сохраняем в сессии параметры пагинации потому что это сбивает с толку пользователей
             \CPageOption::SetOptionString("main", "nav_page_in_session", "N");
         }
+        
+        $arParams['PREPROD_SERVER'] = defined('PREPROD_SERVER') && PREPROD_SERVER;
 
         return $arParams;
     }
@@ -65,6 +69,7 @@ class ElementsList extends ComponentsBase
         $this->selectSections();
         $this->selectElements();
         $this->buildTree();
+        $this->prepareResult();
         $this->setPanelButtons();
     }
 
@@ -76,8 +81,8 @@ class ElementsList extends ComponentsBase
         $this->showPanelButtons();
     }
 
-    /**
-     * �������� ���� ���������, ��������� � $arResult['IBLOCK']
+     /**
+     * Выбирает поля инфоблока, результат в $arResult['IBLOCK']
      * @throws \Exception
      */
     protected function selectIblock()
@@ -96,9 +101,9 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * �������� ���� ��������/�������
-     * ���� ������  - $arResult['SECTION']
-     * ����� ������ - $arResult['SECTIONS']
+     * Выбирает поля разделов/раздела
+     * Один раздел  - $arResult['SECTION']
+     * Более одного - $arResult['SECTIONS']
      * @throws \Exception
      */
     protected function selectSections()
@@ -120,6 +125,10 @@ class ElementsList extends ComponentsBase
         if ($this->arParams['SECTION_CODE'])
         {
             $filter['CODE'] = $this->arParams['SECTION_CODE'];
+        }
+        else if ($this->arParams['SECTION_ID'])
+        {
+            $filter['ID'] = $this->arParams['SECTION_CODE'];
         }
         $select = [
             'ID',
@@ -148,6 +157,17 @@ class ElementsList extends ComponentsBase
                 //throw new \Exception('section with code "' . $this->arParams['SECTION_CODE'] . '" doesn\'t found in IBLOCK_ID=' . $this->arResult['IBLOCK']['ID']);
             }
         }
+        else if ($this->arParams['SECTION_ID'])
+        {
+            if ($section = $rs->Fetch())
+            {
+                $sections[] = $section;
+            }
+            else
+            {
+                throw new \Exception('section with id "' . $this->arParams['SECTION_ID'] . '" doesn\'t found in IBLOCK_ID=' . $this->arResult['IBLOCK']['ID']);
+            }
+        }
         else
         {
             while ($section = $rs->GetNext())
@@ -163,9 +183,9 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * �������� ���� ��������, ��������� � $arResult['ELEMENTS']
-     * ������������ ��������� - $arResult['NAV_STRING']
-     * ������������ ��������� ��� json api -  $arResult['NAV']
+     * Выбирает поля элемента, результат в $arResult['ELEMENTS']
+     * Постраничная навигация - $arResult['NAV_STRING']
+     * Постраничная навигация для json api -  $arResult['NAV']
      * @throws \Exception
      */
     protected function selectElements()
@@ -177,10 +197,13 @@ class ElementsList extends ComponentsBase
             $this->arParams['ELEMENT_SORT_BY3'] => $this->arParams['ELEMENT_SORT_ORDER3'],
         ];
         $filter = [
-            'ACTIVE'=>'Y',
             'IBLOCK_ID'=>$this->arResult['IBLOCK']['ID'],
         ];
 
+        if (!$this->arParams['PREPROD_SERVER'])
+        {
+            $filter['ACTIVE'] = 'Y';
+        }
         if (SITE_ID == 'en')
         {
             //for english version
@@ -198,6 +221,14 @@ class ElementsList extends ComponentsBase
         if($this->arParams['SECTION_CODE'])
         {
             $filter['SECTION_CODE'] = $this->arParams['SECTION_CODE'];
+            if($this->arParams['INCLUDE_SUBSECTIONS'] == 'Y')
+            {
+                $filter['INCLUDE_SUBSECTIONS'] = 'Y';
+            }
+        }
+        else if($this->arParams['SECTION_ID'])
+        {
+            $filter['SECTION_ID'] = $this->arParams['SECTION_ID'];
             if($this->arParams['INCLUDE_SUBSECTIONS'] == 'Y')
             {
                 $filter['INCLUDE_SUBSECTIONS'] = 'Y';
@@ -269,10 +300,10 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * �������� �������� ��������
-     * @param int $elementId - ID �������� ���������
+     * Выбирает свойства элемента
+     * @param int $elementId - ID элемента инфоблока
      * @throws \Exception
-     * @return array - ��������� CIBlockElement::GetProperty()
+     * @return array - результат CIBlockElement::GetProperty()
      */
     protected function getElementProperties($elementId)
     {
@@ -310,9 +341,9 @@ class ElementsList extends ComponentsBase
         return $props;
     }
 
+
     /**
-     * ������ ������ �������� � ���������, ��������� � $arResult['TREE']
-     * @throws \Exception
+     * Строит дерево разделов и элементов, результат в $arResult['TREE']
      */
     protected function buildTree()
     {
@@ -333,8 +364,13 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * ���������� � ����� ��� ������� ��������
-     * @param array $element - ��������� CIBlockElement::GetList()
+     * Подготавливает к выводу итоговый $arResult
+     */
+    protected function prepareResult() {}
+
+    /**
+     * Вызывается в цикле для каждого элемента
+     * @param array $element - результат CIBlockElement::GetList()
      * @throws \Exception
      * @return array $element
      */
@@ -356,7 +392,9 @@ class ElementsList extends ComponentsBase
                         if ($file = \CFile::GetFileArray($fileId))
                         {
                             $file['DISPLAY_SIZE'] = $this->getFileSize($file['FILE_SIZE']);
-                            list($file['FILE_NAME'], $file['FILE_EXTENSION']) = explode('.', $file['ORIGINAL_NAME']);
+                            $originalName = explode('.', $file['ORIGINAL_NAME']);
+                            $file['FILE_EXTENSION'] = $originalName[count($originalName) - 1];
+                            $file['FILE_NAME'] = str_replace('.' . $file['FILE_EXTENSION'], '', $originalName);
                             $property['VALUE_DETAILS'][] = $file;
                         }
                     }
@@ -376,8 +414,8 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * �������� ������ ����� � ������� ���������
-     * @param int $size - ������ ����� � ������
+     * Получить размер файла и единицы измерения
+     * @param int $size - размер файла в байтах
      * @return array
      */
     protected function getFileSize($size)
@@ -402,7 +440,7 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * ������������� ������ ���������� ����������� � ��������� ����� � ������ ��������������
+     * Устанавливает кнопки управления компонентом в публичной части в режиме редактирования
      */
     protected function setPanelButtons()
     {
@@ -422,7 +460,7 @@ class ElementsList extends ComponentsBase
     }
 
     /**
-     * ���������� ������ ���������� ����������� � ��������� ����� � ������ ��������������
+     * Отображает кнопки управления компонентом в публичной части в режиме редактирования
      */
     protected function showPanelButtons()
     {

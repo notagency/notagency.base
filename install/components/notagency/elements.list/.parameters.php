@@ -162,7 +162,13 @@ $arComponentParameters = array(
 			'DEFAULT' => 'Y',
             'REFRESH' => 'Y',
 		),
-		'ACTIVE_DATE_FORMAT' => CIBlockParameters::GetDateFormat(GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_ACTIVE_DATE_FORMAT'), 'ADDITIONAL_SETTINGS'),
+        'CUSTOM_DATE_FORMAT' => array(
+			'PARENT' => 'DATA_SOURCE',
+			'NAME' => 'Особый формат даты',
+			'TYPE' => 'CHECKBOX',
+			'DEFAULT' => 'Y',
+            'REFRESH' => 'Y',
+		),
         'SHOW_PANEL_BUTTONS' => array(
 			'PARENT' => 'ADDITIONAL_SETTINGS',
 			'NAME' => GetMessage('NIK_ELEMENTS_LIST_SHOW_PANEL_BUTTONS'),
@@ -244,22 +250,9 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
     ));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if ($arCurrentValues['CUSTOM_DATE_FORMAT'] == 'Y')
+{
+    $arComponentParameters['PARAMETERS'] = array_merge($arComponentParameters['PARAMETERS'], array(
+        'ACTIVE_DATE_FORMAT' => CIBlockParameters::GetDateFormat(GetMessage('NIK_ELEMENTS_LIST_COMPONENT_IBLOCK_DESC_ACTIVE_DATE_FORMAT'), 'ADDITIONAL_SETTINGS'),
+    ));
+}

@@ -6,29 +6,23 @@ $arSorts = [
     'ASC'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_ASC'), 
     'DESC'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_DESC')
 ];
-$arSortFields = [
-    'ID'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FID'),
-    'NAME'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FNAME'),
-    'DATE_ACTIVE_FROM'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FACT'),
-    'SORT'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FSORT'),
-];
-
-$arSortSectionFields = [
-    'ID'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FID'),
-    'NAME'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FNAME'),
-    'SORT'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FSORT'),
-];
 
 if(!CModule::IncludeModule('iblock'))
     return;
 
+$iblocks = [];
+$currentIblockId = false;
+$fields = [];
+$sectionProperties = [];
+$elementProperties = [];
+
+
+//select iblock types
 $iblockTypes = CIBlockParameters::GetIBlockTypes(array('-'=>' '));
 
 if ($arCurrentValues['IBLOCK_TYPE'] != '-')
 {
 	//select iblocks
-	$iblocks = [];
-	$iblocksIds = [];
 	$order = [
 		'SORT' => 'ASC',
 		'NAME' => 'ASC',
@@ -39,39 +33,29 @@ if ($arCurrentValues['IBLOCK_TYPE'] != '-')
 	$rs = CIBlock::GetList($order, $filter);
 	while ($item = $rs->Fetch())
 	{
-		$iblocksIds[$item['CODE']] = $item['ID'];
+        if ($item['CODE'] == $arCurrentValues['IBLOCK_CODE'])
+        {
+            $currentIblockId = $arCurrentValues['IBLOCK_CODE'];
+        }
 		$iblocks[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
 	}
-
-	//select iblock's element's fields and properties
-	$iblockId = !empty($iblocksIds[$arCurrentValues['IBLOCK_CODE']]) ? $iblocksIds[$arCurrentValues['IBLOCK_CODE']] : false;
 }
-if ($iblockId)
+if ($currentIblockId)
 {
-    //select fields
-    $fields = [];
-    $rawFields = CIBlock::GetFields($iblockId);
-    foreach ($rawFields as $fieldCode=>$field)
-    {
-        $fields[$fieldCode] = $field['NAME'];
-    }
-    
     //select section properties
-    $sectionProperties = [];
     $filter = [
-        'ENTITY_ID' => 'IBLOCK_' . $iblockId . '_SECTION',
+        'ENTITY_ID' => 'IBLOCK_' . $currentIblockId . '_SECTION',
     ];
-    $rs = CUserTypeEntity::GetList([], $filter );
+    $rs = CUserTypeEntity::GetList([], $filter);
     while($field = $rs->Fetch())
     {
         $sectionProperties[$field['FIELD_NAME']] = $field['FIELD_NAME'];
     }
 
     //select element properties
-    $elementProperties = [];
     $filter = [
         'ACTIVE'=>'Y', 
-        'IBLOCK_ID'=> $iblockId,
+        'IBLOCK_ID'=> $currentIblockId,
     ];
     $rsProp = CIBlockProperty::GetList([], $filter);
     while ($item = $rsProp->Fetch())
@@ -81,7 +65,12 @@ if ($iblockId)
 }
 
 $arComponentParameters = array(
-
+    'GROUPS' => array(
+        'ELEMENTS_SORTING' => array(
+            'NAME' => 'Сортировка элементов',
+            'SORT' => 100,
+        ),
+    ),
 	'PARAMETERS' => array(
 		'IBLOCK_TYPE' => array(
 			'PARENT' => 'BASE',
@@ -96,7 +85,6 @@ $arComponentParameters = array(
 			'TYPE' => 'LIST',
 			'VALUES' => $iblocks,
 			'REFRESH' => 'Y',
-
 		),
 		'ELEMENTS_COUNT' => array(
 			'PARENT' => 'BASE',
@@ -105,45 +93,54 @@ $arComponentParameters = array(
 			'DEFAULT' => '20',
 		),
 		'ELEMENT_SORT_BY1' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBORD1'),
+			'PARENT' => 'ELEMENTS_SORTING',
+			'NAME' => 'Поле для 1-ой сортировки',
 			'TYPE' => 'LIST',
-			'DEFAULT' => 'DATE_ACTIVE_FROM',
-			'VALUES' => $arSortFields,
+			'DEFAULT' => 'ACTIVE_FROM',
+			'VALUES' => CIBlockParameters::GetElementSortFields(),
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'ELEMENT_SORT_ORDER1' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBBY1'),
+			'PARENT' => 'ELEMENTS_SORTING',
+			'NAME' => 'Направление 1-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DESC',
 			'VALUES' => $arSorts,
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'ELEMENT_SORT_BY2' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBORD2'),
+			'PARENT' => 'ELEMENTS_SORTING',
+            'NAME' => 'Поле для 2-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'SORT',
-			'VALUES' => $arSortFields,
+            'VALUES' => CIBlockParameters::GetElementSortFields(),
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'ELEMENT_SORT_ORDER2' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBBY2'),
+			'PARENT' => 'ELEMENTS_SORTING',
+            'NAME' => 'Направление 2-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'ASC',
 			'VALUES' => $arSorts,
 			'ADDITIONAL_VALUES' => 'Y',
 		),
-        'ELEMENT_FIELDS' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => 'Поля элементов',
-			'TYPE' => 'LIST',
-			'MULTIPLE' => 'Y',
-			'VALUES' => $fields,
-			'ADDITIONAL_VALUES' => 'Y',
-		),
+        'ELEMENT_SORT_BY3' => array(
+            'PARENT' => 'ELEMENTS_SORTING',
+            'NAME' => 'Поле для 3-ей сортировки',
+            'TYPE' => 'LIST',
+            'DEFAULT' => 'SORT',
+            'VALUES' => CIBlockParameters::GetElementSortFields(),
+            'ADDITIONAL_VALUES' => 'Y',
+        ),
+        'ELEMENT_SORT_ORDER3' => array(
+            'PARENT' => 'ELEMENTS_SORTING',
+            'NAME' => 'Направление 3-ей сортировки',
+            'TYPE' => 'LIST',
+            'DEFAULT' => 'ASC',
+            'VALUES' => $arSorts,
+            'ADDITIONAL_VALUES' => 'Y',
+        ),
+        'ELEMENT_FIELDS' => CIBlockParameters::GetFieldCode('Поля элементов', 'DATA_SOURCE'),
 		'ELEMENT_PROPERTIES' => array(
 			'PARENT' => 'DATA_SOURCE',
 			'NAME' => 'Свойства элементов',
@@ -206,15 +203,15 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
         'SECTION_SORT_BY1' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSORD1'),
+			'NAME' => 'Поле для 1-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DATE_ACTIVE_FROM',
-			'VALUES' => $arSortSectionFields,
+			'VALUES' => CIBlockParameters::GetSectionSortFields(),
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'SECTION_SORT_ORDER1' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSBY1'),
+			'NAME' => 'Направление 1-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DESC',
 			'VALUES' => $arSorts,
@@ -222,15 +219,15 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
 		'SECTION_SORT_BY2' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSORD2'),
+			'NAME' => 'Поле для 2-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'SORT',
-			'VALUES' => $arSortSectionFields,
+            'VALUES' => CIBlockParameters::GetSectionSortFields(),
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'SECTION_SORT_ORDER2' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSBY2'),
+			'NAME' => 'Направление 2-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'ASC',
 			'VALUES' => $arSorts,

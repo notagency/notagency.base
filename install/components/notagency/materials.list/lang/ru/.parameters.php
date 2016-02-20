@@ -12,16 +12,6 @@ $MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FACT'] = 'Дата нач�
 $MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FSORT'] = 'Сортировка';
 $MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_FTSAMP'] = 'Дата последнего изменения';
 
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBORD1'] = 'Поле для первой сортировки элементов';
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBBY1'] = 'Направление для первой сортировки элементов';
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBORD2'] = 'Поле для второй сортировки элементов';
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBBY2'] = 'Направление для второй сортировки элементов';
-
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSORD1'] = 'Поле для первой сортировки разделов';
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSBY1'] = 'Направление для первой сортировки разделов';
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSORD2'] = 'Поле для второй сортировки разделов';
-$MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_IBSBY2'] = 'Направление для второй сортировки разделов';
-
 $MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LISNOTAGENCY_MATERIALS_LIST_COMPONENT_ID'] = 'Код информационного блока';
 $MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LISNOTAGENCY_MATERIALS_LIST_COMPONENT_TYPE'] = 'Тип информационного блока (используется только для проверки)';
 $MESS['NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LISNOTAGENCY_MATERIALS_LIST_COMPONENT_CONT'] = 'Количество элементов на странице';

@@ -4,7 +4,7 @@ if(!defined('B_PROLOG_INCLUDED')||B_PROLOG_INCLUDED!==true)die();
 if(!CModule::IncludeModule('iblock'))
     return;
 
-if ($arCurrentValues['IBLOCK_CODE'] != '-')
+if (!empty($arCurrentValues['IBLOCK_CODE']))
 {
     //select iblock's element's fields and properties
     $filter = [
@@ -14,7 +14,7 @@ if ($arCurrentValues['IBLOCK_CODE'] != '-')
     {
         //select fields
         $fields = [];
-        $rawFields = CIBlock::GetFields($iblockId);
+        $rawFields = CIBlock::GetFields($currentIblockId);
         foreach ($rawFields as $fieldCode=>$field)
         {
             $fields[$fieldCode] = $field['NAME'];
@@ -24,7 +24,7 @@ if ($arCurrentValues['IBLOCK_CODE'] != '-')
         $elementProperties = [];
         $filter = [
             'ACTIVE'=>'Y',
-            'IBLOCK_ID'=> $iblockId,
+            'IBLOCK_ID'=> $currentIblockId,
         ];
         $rsProp = CIBlockProperty::GetList([], $filter);
         while ($item = $rsProp->Fetch())

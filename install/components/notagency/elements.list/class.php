@@ -1,7 +1,9 @@
 <?
 namespace Notagency\Components;
 
-\CBitrixComponent::includeComponentClass('notagency:components.base');
+use Notagency\Base\ComponentsBase;
+
+if (!\Bitrix\Main\Loader::includeModule('notagency.base')) return false;
 
 class ElementsList extends ComponentsBase
 {
@@ -42,7 +44,7 @@ class ElementsList extends ComponentsBase
             $nav = \CDBResult::GetNavParams();
             if ($nav)  $arParams['PAGE'] = intval($nav['PAGEN']);
             else if ($arParams['PAGE']) $arParams['PAGE'] = intval($_GET['page']);
-            //не сохраняем в сессии параметры пагинации потому что это сбивает с толку
+            //не сохраняем в сессии параметры пагинации потому что это сбивает с толку пользователей
             \CPageOption::SetOptionString("main", "nav_page_in_session", "N");
         }
 

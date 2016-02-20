@@ -49,7 +49,7 @@ $arComponentParameters['PARAMETERS']['SELECT_ELEMENT_BY'] = array(
     'REFRESH' => 'Y',
 );
 
-if ($arCurrentValues['SELECT_ELEMENT_BY_ID'] == 'Y')
+if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'ID')
 {
     $arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_ID'] = array(
         'PARENT' => 'BASE',
@@ -58,7 +58,7 @@ if ($arCurrentValues['SELECT_ELEMENT_BY_ID'] == 'Y')
         'DEFAULT' => 'element_id',
     );
 }
-else
+else if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'CODE')
 {
     $arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_CODE'] = array(
         'PARENT' => 'BASE',
@@ -120,8 +120,10 @@ CIBlockParameters::Add404Settings($arComponentParameters, $arCurrentValues);
 unset($arComponentParameters['PARAMETERS']['ELEMENTS_COUNT']);
 unset($arComponentParameters['PARAMETERS']['ELEMENT_SORT_BY1']);
 unset($arComponentParameters['PARAMETERS']['ELEMENT_SORT_BY2']);
+unset($arComponentParameters['PARAMETERS']['ELEMENT_SORT_BY3']);
 unset($arComponentParameters['PARAMETERS']['ELEMENT_SORT_ORDER1']);
 unset($arComponentParameters['PARAMETERS']['ELEMENT_SORT_ORDER2']);
+unset($arComponentParameters['PARAMETERS']['ELEMENT_SORT_ORDER3']);
 unset($arComponentParameters['PARAMETERS']['SECTION_SORT_BY1']);
 unset($arComponentParameters['PARAMETERS']['SECTION_SORT_BY2']);
 unset($arComponentParameters['PARAMETERS']['SECTION_SORT_ORDER1']);

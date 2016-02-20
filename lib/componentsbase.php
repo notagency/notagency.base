@@ -1,4 +1,10 @@
 <?
+
+/**
+ * @link https://bitbucket.org/notagency/notagency.base
+ * @copyright Copyright © 2016 NotAgency
+ */
+
 namespace Notagency\Base;
 
 use Bitrix\Main;

@@ -61,6 +61,7 @@ class MaterialsList extends ComponentsBase
         $this->selectIblock();
         $this->selectSections();
         $this->selectElements();
+        $this->buildTree();
         $this->setPanelButtons();
     }
 
@@ -362,6 +363,27 @@ class MaterialsList extends ComponentsBase
             }
         }
         return $element;
+    }
+
+    /**
+     * Строит дерево разделов и элементов, результат в $arResult['TREE']
+     */
+    protected function buildTree()
+    {
+        if (!empty($this->arResult['SECTIONS']) && !empty($this->arResult['ELEMENTS']))
+        {
+            foreach ($this->arResult['SECTIONS'] as $section)
+            {
+                $this->arResult['TREE'][$section['ID']] = $section;
+            }
+            foreach ($this->arResult['ELEMENTS'] as $element)
+            {
+                if (intval($element['IBLOCK_SECTION_ID']) > 0)
+                {
+                    $this->arResult['TREE'][$element['IBLOCK_SECTION_ID']]['ELEMENTS'][] = $element;
+                }
+            }
+        }
     }
 
     /**

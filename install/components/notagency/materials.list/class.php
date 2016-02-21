@@ -8,9 +8,6 @@ if (!\Bitrix\Main\Loader::includeModule('notagency.base')) return false;
 
 class MaterialsList extends ComponentsBase
 {
-    const ENGLISH_ELEMENT_ACTIVE_PROPERTY = 'ACTIVE_EN';
-    const ENGLISH_ELEMENT_NAME_PROPERTY = 'NAME_EN';
-
     protected $needModules = ['iblock'];
 
     protected $checkParams = [
@@ -64,8 +61,6 @@ class MaterialsList extends ComponentsBase
         $this->selectIblock();
         $this->selectSections();
         $this->selectElements();
-        $this->buildTree();
-        $this->prepareResult();
         $this->setPanelButtons();
     }
 
@@ -74,6 +69,7 @@ class MaterialsList extends ComponentsBase
      */
     protected function executeEpilog()
     {
+        //не кешируется
         $this->showPanelButtons();
     }
 
@@ -149,8 +145,7 @@ class MaterialsList extends ComponentsBase
             }
             else
             {
-                define("ERROR_404","Y");
-                //throw new \Exception('section with code "' . $this->arParams['SECTION_CODE'] . '" doesn\'t found in IBLOCK_ID=' . $this->arResult['IBLOCK']['ID']);
+                define('ERROR_404', 'Y');
             }
         }
         else if ($this->arParams['SECTION_ID'])
@@ -161,7 +156,7 @@ class MaterialsList extends ComponentsBase
             }
             else
             {
-                throw new \Exception('section with id "' . $this->arParams['SECTION_ID'] . '" doesn\'t found in IBLOCK_ID=' . $this->arResult['IBLOCK']['ID']);
+                define('ERROR_404', 'Y');
             }
         }
         else
@@ -181,7 +176,6 @@ class MaterialsList extends ComponentsBase
     /**
      * Выбирает поля элемента, результат в $arResult['ELEMENTS']
      * Постраничная навигация - $arResult['NAV_STRING']
-     * Постраничная навигация для json api -  $arResult['NAV']
      * @throws \Exception
      */
     protected function selectElements()
@@ -199,19 +193,6 @@ class MaterialsList extends ComponentsBase
         if (!$this->arParams['PREPROD_SERVER'])
         {
             $filter['ACTIVE'] = 'Y';
-        }
-        if (SITE_ID == 'en')
-        {
-            //for english version
-            if(
-                !\CIBlockProperty::GetByID(self::ENGLISH_ELEMENT_ACTIVE_PROPERTY, $this->arResult['IBLOCK']['ID'])->fetch()
-                && !\CIBlockProperty::GetByID(self::ENGLISH_ELEMENT_NAME_PROPERTY, $this->arResult['IBLOCK']['ID'])->fetch()
-            )
-            {
-                return $elements;
-            }
-            $filter['!PROPERTY_' . self::ENGLISH_ELEMENT_ACTIVE_PROPERTY] = false;
-            $filter['!PROPERTY_' . self::ENGLISH_ELEMENT_NAME_PROPERTY] = false;
         }
 
         if($this->arParams['SECTION_CODE'])
@@ -337,44 +318,18 @@ class MaterialsList extends ComponentsBase
         return $props;
     }
 
-
-    /**
-     * Строит дерево разделов и элементов, результат в $arResult['TREE']
-     */
-    protected function buildTree()
-    {
-        if (!empty($this->arResult['SECTIONS']) && !empty($this->arResult['ELEMENTS']))
-        {
-            foreach ($this->arResult['SECTIONS'] as $section)
-            {
-                $this->arResult['TREE'][$section['ID']] = $section;
-            }
-            foreach ($this->arResult['ELEMENTS'] as $element)
-            {
-                if (intval($element['IBLOCK_SECTION_ID']) > 0)
-                {
-                    $this->arResult['TREE'][$element['IBLOCK_SECTION_ID']]['ELEMENTS'][] = $element;
-                }
-            }
-        }
-    }
-
-    /**
-     * Подготавливает к выводу итоговый $arResult
-     */
-    protected function prepareResult() {}
-
     /**
      * Вызывается в цикле для каждого элемента
      * @param array $element - результат CIBlockElement::GetList()
-     * @throws \Exception
      * @return array $element
+     * @throws \Exception
      */
     protected function processElement($element)
     {
         $element['DISPLAY_ACTIVE_FROM'] = self::formatDisplayDate($element['DATE_ACTIVE_FROM'], $this->arParams['ACTIVE_DATE_FORMAT']);
         foreach ($element['PROPERTIES'] as &$property)
         {
+            //обработка свойства типа "Файл"
             if ($property['PROPERTY_TYPE'] == 'F')
             {
                 if ($property['MULTIPLE'] == 'Y' && count($property['VALUE']))

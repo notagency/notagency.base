@@ -178,6 +178,7 @@ $arComponentParameters = array(
 			'NAME' => 'Свойства элементов',
 			'TYPE' => 'LIST',
 			'MULTIPLE' => 'Y',
+			'SIZE' => 8,
 			'VALUES' => $elementProperties,
 			'ADDITIONAL_VALUES' => 'Y',
 		),

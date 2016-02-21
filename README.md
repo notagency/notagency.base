@@ -8,9 +8,10 @@
 # Компоненты #
 
 * materials.list - для вывода списков (элементы, секции инфоблока)
-* materials.detail - на основе materials.list только с ограничением в 1 элемент
-* catalog.list - на основе materials.list только с дополнительным выбором информации модуля каталога (цены, кол-во товара и т.д.)
-* catalog.detail - на основе materials.detail тоже самое что и catalog.list только с ограничением в 1 элемент
+* materials.detail - на основе materials.list с ограничением в 1 элемент
+* materials.tree -  на основе materials.list + дерево разделов и элементов в $arResult['TREE']
+* catalog.list - на основе materials.list + данные каталога (цены, кол-во товара и т.д.)
+* catalog.detail - на основе materials.detail тоже самое что и catalog.list с ограничением в 1 элемент
 
 # Установка #
 

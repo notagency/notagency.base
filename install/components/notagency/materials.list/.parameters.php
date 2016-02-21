@@ -68,7 +68,11 @@ $arComponentParameters = array(
     'GROUPS' => array(
         'ELEMENTS_SORTING' => array(
             'NAME' => 'Сортировка элементов',
-            'SORT' => 100,
+            'SORT' => 150,
+        ),
+        'SECTION_SORTING' => array(
+            'NAME' => 'Сортировка разделов',
+            'SORT' => 160,
         ),
     ),
 	'PARAMETERS' => array(
@@ -92,6 +96,13 @@ $arComponentParameters = array(
 			'TYPE' => 'STRING',
 			'DEFAULT' => '20',
 		),
+        'SELECT_SECTIONS' => array(
+            'PARENT' => 'BASE',
+            'NAME' => GetMessage('NIK_ELEMENTS_LIST_SELECT_SECTIONS'),
+            'TYPE' => 'CHECKBOX',
+            'DEFAULT' => 'N',
+            'REFRESH' => 'Y',
+        ),
 		'ELEMENT_SORT_BY1' => array(
 			'PARENT' => 'ELEMENTS_SORTING',
 			'NAME' => 'Поле для 1-ой сортировки',
@@ -140,7 +151,28 @@ $arComponentParameters = array(
             'VALUES' => $arSorts,
             'ADDITIONAL_VALUES' => 'Y',
         ),
-        'ELEMENT_FIELDS' => CIBlockParameters::GetFieldCode('Поля элементов', 'DATA_SOURCE'),
+        'ELEMENT_FIELDS' => array(
+            'PARENT' => 'DATA_SOURCE',
+            'NAME' => 'Поля элементов',
+            'TYPE' => 'LIST',
+            'MULTIPLE' => 'Y',
+            'SIZE' => 8,
+            'VALUES' => [
+                'NAME' => 'Название',
+                'CODE' => 'Символьный код',
+                'DETAIL_PAGE_URL' => 'Ссылка на детальную страницу',
+                'ACTIVE_FROM' => 'Начало активности',
+                'ACTIVE_TO' => 'Окончание активности',
+                'PREVIEW_TEXT' => 'Описание для анонса',
+                'PREVIEW_PICTURE' => 'Картинка для анонса',
+                'DETAIL_TEXT' => 'Детальное для анонса',
+                'DETAIL_PICTURE' => 'Детальная картинка',
+                'IBLOCK_SECTION_ID' => 'ID раздела',
+                'TAGS' => 'Теги',
+                'SORT' => 'Индекс сортировки',
+            ],
+            'ADDITIONAL_VALUES' => 'Y',
+        ),
 		'ELEMENT_PROPERTIES' => array(
 			'PARENT' => 'DATA_SOURCE',
 			'NAME' => 'Свойства элементов',
@@ -150,17 +182,10 @@ $arComponentParameters = array(
 			'ADDITIONAL_VALUES' => 'Y',
 		),
         'FILTER_NAME' => array(
-			'PARENT' => 'DATA_SOURCE',
+			'PARENT' => 'ADDITIONAL_SETTINGS',
 			'NAME' => 'Название переменной в которой содержится массив фильтрации элементов инфоблока',
 			'TYPE' => 'STRING',
 			'DEFAULT' => '',
-		),
-        'SELECT_SECTIONS' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_SELECT_SECTIONS'),
-			'TYPE' => 'CHECKBOX',
-			'DEFAULT' => 'N',
-            'REFRESH' => 'Y',
 		),
         'CUSTOM_DATE_FORMAT' => array(
 			'PARENT' => 'ADDITIONAL_SETTINGS',
@@ -186,31 +211,60 @@ $arComponentParameters = array(
 	),
 );
 
+$arComponentParameters['PARAMETERS']['SELECT_BY_SECTION'] = array(
+    'PARENT' => 'BASE',
+    'NAME' => 'Выбирать элементы по разделу',
+    'TYPE' => 'LIST',
+    'VALUES' => [
+        'NO' => 'нет',
+        'CODE' => 'по коду раздела',
+        'ID' => 'по id раздела',
+    ],
+    'DEFAULT' => 'NO',
+    'REFRESH' => 'Y',
+);
+
+if ($arCurrentValues['SELECT_BY_SECTION'] == 'ID')
+{
+    $arComponentParameters['PARAMETERS']['SECTION_ID'] = array(
+        'PARENT' => 'BASE',
+        'NAME' => GetMessage('IBLOCK_SECTION_ID'),
+        'TYPE' => 'STRING',
+        'DEFAULT' => '',
+    );
+}
+else if ($arCurrentValues['SELECT_BY_SECTION'] == 'CODE')
+{
+    $arComponentParameters['PARAMETERS']['SECTION_CODE'] = array(
+        'PARENT' => 'BASE',
+        'NAME' => GetMessage('IBLOCK_SECTION_CODE'),
+        'TYPE' => 'STRING',
+        'DEFAULT' => '',
+    );
+}
+if (in_array($arCurrentValues['SELECT_BY_SECTION'], ['ID', 'CODE']))
+{
+    $arComponentParameters['PARAMETERS']['INCLUDE_SUBSECTIONS'] = array(
+        'PARENT' => 'BASE',
+        'NAME' => 'Выбирать элементы из всех подразделов раздела',
+        'TYPE' => 'CHECKBOX',
+        'DEFAULT' => 'Y',
+    );
+}
+
 if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 {
     $arComponentParameters['PARAMETERS'] = array_merge($arComponentParameters['PARAMETERS'], array(
-		'SECTION_CODE' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('IBLOCK_SECTION_CODE'),
-			'TYPE' => 'STRING',
-			'DEFAULT' => '',
-		),
-        'SECTION_ID' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => GetMessage('IBLOCK_SECTION_ID'),
-			'TYPE' => 'STRING',
-			'DEFAULT' => '',
-		),
         'SECTION_SORT_BY1' => array(
-			'PARENT' => 'DATA_SOURCE',
+			'PARENT' => 'SECTION_SORTING',
 			'NAME' => 'Поле для 1-ой сортировки',
 			'TYPE' => 'LIST',
-			'DEFAULT' => 'DATE_ACTIVE_FROM',
+			'DEFAULT' => 'SORT',
 			'VALUES' => CIBlockParameters::GetSectionSortFields(),
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'SECTION_SORT_ORDER1' => array(
-			'PARENT' => 'DATA_SOURCE',
+			'PARENT' => 'SECTION_SORTING',
 			'NAME' => 'Направление 1-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'DESC',
@@ -218,15 +272,15 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'SECTION_SORT_BY2' => array(
-			'PARENT' => 'DATA_SOURCE',
+			'PARENT' => 'SECTION_SORTING',
 			'NAME' => 'Поле для 2-ой сортировки',
 			'TYPE' => 'LIST',
-			'DEFAULT' => 'SORT',
+			'DEFAULT' => 'ID',
             'VALUES' => CIBlockParameters::GetSectionSortFields(),
 			'ADDITIONAL_VALUES' => 'Y',
 		),
 		'SECTION_SORT_ORDER2' => array(
-			'PARENT' => 'DATA_SOURCE',
+			'PARENT' => 'SECTION_SORTING',
 			'NAME' => 'Направление 2-ой сортировки',
 			'TYPE' => 'LIST',
 			'DEFAULT' => 'ASC',
@@ -240,12 +294,6 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 			'MULTIPLE' => 'Y',
 			'VALUES' => $sectionProperties,
 			'ADDITIONAL_VALUES' => 'Y',
-		),
-        'INCLUDE_SUBSECTIONS' => array(
-			'PARENT' => 'DATA_SOURCE',
-			'NAME' => 'Выбирать элементы из всех подразделов раздела',
-			'TYPE' => 'CHECKBOX',
-			'DEFAULT' => 'Y',
 		),
     ));
 }

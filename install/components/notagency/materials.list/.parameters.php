@@ -35,7 +35,7 @@ if ($arCurrentValues['IBLOCK_TYPE'] != '-')
 	{
         if ($item['CODE'] == $arCurrentValues['IBLOCK_CODE'])
         {
-            $currentIblockId = $arCurrentValues['IBLOCK_CODE'];
+            $currentIblockId = $item['ID'];
         }
 		$iblocks[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
 	}

@@ -182,11 +182,14 @@ class MaterialsList extends ComponentsBase
     protected function selectElements()
     {
         $elements = [];
+        //order
         $sort = [
             $this->arParams['ELEMENT_SORT_BY1'] => $this->arParams['ELEMENT_SORT_ORDER1'],
             $this->arParams['ELEMENT_SORT_BY2'] => $this->arParams['ELEMENT_SORT_ORDER2'],
             $this->arParams['ELEMENT_SORT_BY3'] => $this->arParams['ELEMENT_SORT_ORDER3'],
         ];
+
+        //filter
         $filter = [
             'IBLOCK_ID'=>$this->arResult['IBLOCK']['ID'],
         ];
@@ -216,7 +219,12 @@ class MaterialsList extends ComponentsBase
         {
             $filter = array_merge($filter, $this->elementsFilter);
         }
+        if(strlen($this->arParams['FILTER_NAME']) > 0 && preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $this->arParams['FILTER_NAME']))
+        {
+            $filter = array_merge($filter, $GLOBALS[$this->arParams["FILTER_NAME"]]);
+        }
 
+        //nav
         $nav = false;
         if ($this->arParams['PAGING'] == 'Y')
         {
@@ -232,6 +240,7 @@ class MaterialsList extends ComponentsBase
             ];
         }
 
+        //select
         if (is_array($this->arParams['ELEMENT_FIELDS']) && count($this->arParams['ELEMENT_FIELDS']))
         {
             $select = array_merge($this->arParams['ELEMENT_FIELDS'], ['ID', 'IBLOCK_ID']);

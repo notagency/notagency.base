@@ -50,6 +50,12 @@ class MaterialsList extends ComponentsBase
         
         $arParams['PREPROD_SERVER'] = defined('PREPROD_SERVER') && PREPROD_SERVER;
 
+        if(strlen($arParams['FILTER_NAME']) > 0 && preg_match('/^[A-Za-z_][A-Za-z01-9_]*$/', $arParams['FILTER_NAME']))
+        {
+            $this->elementsFilter = array_merge($this->elementsFilter, $GLOBALS[$arParams['FILTER_NAME']]);
+            $this->addCacheAdditionalId($GLOBALS[$arParams['FILTER_NAME']]);
+        }
+
         return $arParams;
     }
 
@@ -218,10 +224,6 @@ class MaterialsList extends ComponentsBase
         if (is_array($this->elementsFilter))
         {
             $filter = array_merge($filter, $this->elementsFilter);
-        }
-        if(strlen($this->arParams['FILTER_NAME']) > 0 && preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $this->arParams['FILTER_NAME']))
-        {
-            $filter = array_merge($filter, $GLOBALS[$this->arParams["FILTER_NAME"]]);
         }
 
         //nav

@@ -1,8 +1,8 @@
 # Оглавление #
 
-* [Описание](#description)
-* [Компоненты](#components)
-* [Установка](#install)
+* [Описание](#markdown-header-_1)
+* [Компоненты](#markdown-header-_2)
+* [Установка](#markdown-header-_3)
 * [Библиотека componentsBase](#markdown-header-componentsbase)
 
 # Описание #

@@ -26,10 +26,8 @@
 
 ```
 #!bash
-
 composer config repositories.notagency vcs git@bitbucket.org:notagency/notagency.base.git
 composer require notagency/base
-
 ```
 
 Модуль должен появится в списке Marketplace->Установленные решения.
@@ -43,8 +41,8 @@ composer require notagency/base
 В методе *executeBase* устанавливается порядок выполнения методов компонента на основе componentsBase:
 
 ```
-#!php
-
+#!php4
+<?
 final protected function componentsBase()
 {
 //подключает необходимые модули указанные в массиве атрибута класса $needModules
@@ -97,5 +95,5 @@ final protected function componentsBase()
 //останавливает выполнение скрипта, если аякс-запрос
 	$this->stopAjax();
 }
-
+?>
 ```

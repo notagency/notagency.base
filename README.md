@@ -3,7 +3,7 @@
 * [Описание](#description)
 * [Компоненты](#components)
 * [Установка](#install)
-* [Библиотека componentsBase](#componentsBase)
+* [Библиотека componentsBase](#markdown-header-componentsbase)
 
 # Описание #
 Модуль содержит набор часто используемых компонентов на различных проектах. Преимущества данных компонентов по сравнению со стандартными:

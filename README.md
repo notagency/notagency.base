@@ -21,7 +21,7 @@
 
 # Установка #
 
-Модуль распространяется через composer.
+Модуль распространяется через [composer](https://getcomposer.org/doc/00-intro.md).
 В корне сайта, где установлен битрикс, необходимо выполнить следующие команды:
 
 ```
@@ -30,7 +30,7 @@ composer config repositories.notagency vcs git@bitbucket.org:notagency/notagency
 composer require notagency/base
 ```
 
-Модуль должен появится в списке Marketplace->Установленные решения.
+Модуль должен появится в списке *Marketplace → Установленные решения*.
 Далее следует стандартная процедура установки marketplace-модуля.
 
 # Библиотека componentsBase #

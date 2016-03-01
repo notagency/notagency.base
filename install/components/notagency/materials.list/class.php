@@ -314,14 +314,17 @@ class MaterialsList extends ComponentsBase
                         if ($prop['PROPERTY_TYPE'] == 'L')
                         {
                             $props[$prop['CODE']]['VALUE_XML_ID'][] = $prop['VALUE_XML_ID'];
+                            $props[$prop['CODE']]['VALUE_ENUM'][] = $prop['VALUE_ENUM'];
                         }
                     }
-                    else{
+                    else
+                    {
                         $props[$prop['CODE']]['DESCRIPTION'] = $prop['DESCRIPTION'];
                         $props[$prop['CODE']]['VALUE'] = $prop['VALUE'];
                         if ($prop['PROPERTY_TYPE'] == 'L')
                         {
                             $props[$prop['CODE']]['VALUE_XML_ID'] = $prop['VALUE_XML_ID'];
+                            $props[$prop['CODE']]['VALUE_ENUM'] = $prop['VALUE_ENUM'];
                         }
                     }
                 }

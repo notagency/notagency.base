@@ -7,6 +7,8 @@
 
 namespace Notagency\Base;
 
+\Bitrix\Main\Loader::IncludeModule('iblock');
+
 class IblockTools
 {
     private static $iblockId = [];
@@ -24,7 +26,7 @@ class IblockTools
         {
             return self::$iblockId[$code];
         }
-        if ($iblock = \CIBlock::GetList([], ['CODE' => $this->arParams['IBLOCK_USER_ANSWERS_CODE']])->fetch())
+        if ($iblock = \CIBlock::GetList([], ['CODE' => $code])->fetch())
         {
             self::$iblockId[$code] = $iblock['ID'];
             return $iblock['ID'];
@@ -54,7 +56,7 @@ class IblockTools
         
         if ($enum = \CIBlockProperty::GetPropertyEnum($propertyCode, [], ['IBLOCK_ID' => $iblockId, 'EXTERNAL_ID' => $enumCode])->fetch())
         {
-            self::self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode] = $enum['ID'];
+            self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode] = $enum['ID'];
             return $enum['ID'];
         }
         return false;

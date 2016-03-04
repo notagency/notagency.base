@@ -5,7 +5,6 @@
  * @copyright Copyright © 2016 NotAgency
  */
 
-
 namespace Notagency\Base;
 
 class Tools
@@ -35,4 +34,20 @@ class Tools
         }
         return $displaySize;
     }
+
+
+    /**
+     * Склонение
+     * Пример вызова: Tools::declOfNum(123, ['товар', 'товары', 'товаров'])
+     *
+     * @param int $number
+     * @param int $titles
+     * @return string
+     */
+    function declOfNum($number, $titles)
+    {
+        $cases = array (2, 0, 1, 1, 1, 2);
+        return $titles[ ($number%100>4 && $number%100<20)? 2 : $cases[min($number%10, 5)] ];
+    }
+
 }

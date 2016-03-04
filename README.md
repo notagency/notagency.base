@@ -1,7 +1,14 @@
+# Оглавление #
+
+* [Описание](#markdown-header-_1)
+* [Компоненты](#markdown-header-_2)
+* [Установка](#markdown-header-_3)
+* [Библиотека componentsBase](#markdown-header-componentsbase)
+
 # Описание #
 Модуль содержит набор часто используемых компонентов на различных проектах. Преимущества данных компонентов по сравнению со стандартными:
 
-1. Компоненты реализуются на основе библиотеки *componentsBase* в которой поддерживаются исключения (exception).
+1. Компоненты реализуются на основе [библиотеки componentsBase](#markdown-header-componentsbase) в которой поддерживаются исключения (exception).
 
 2. Компоненты реализуются через наследование: любой метод компонента может быть переопределен в другом компоненте.
 
@@ -14,18 +21,16 @@
 
 # Установка #
 
-Модуль распространяется через composer.
+Модуль распространяется через [composer](https://getcomposer.org/doc/00-intro.md).
 В корне сайта, где установлен битрикс, необходимо выполнить следующие команды:
 
 ```
 #!bash
-
 composer config repositories.notagency vcs git@bitbucket.org:notagency/notagency.base.git
 composer require notagency/base
-
 ```
 
-Модуль должен появится в списке Marketplace->Установленные решения.
+Модуль должен появится в списке *Marketplace → Установленные решения*.
 Далее следует стандартная процедура установки marketplace-модуля.
 
 # Библиотека componentsBase #
@@ -33,11 +38,11 @@ composer require notagency/base
 Основная библиотека для всех компонентов реализованная на основе *CBitrixComponent*. 
 Библиотека поддерживает исключения. 
 
-В методе *executeBase* устанавливается порядок выполнения методов компонента на основе componentsBase:
+В методе [executeBase](https://bitbucket.org/notagency/notagency.base/src/cb212c88ee5361566ab3af6f3c6e0fe75997bfa1/lib/componentsbase.php?at=master&fileviewer=file-view-default#componentsbase.php-47) устанавливается порядок выполнения методов компонента на основе *componentsBase*:
 
 ```
-#!php
-
+#!php4
+<?
 final protected function componentsBase()
 {
 //подключает необходимые модули указанные в массиве атрибута класса $needModules
@@ -90,5 +95,5 @@ final protected function componentsBase()
 //останавливает выполнение скрипта, если аякс-запрос
 	$this->stopAjax();
 }
-
+?>
 ```

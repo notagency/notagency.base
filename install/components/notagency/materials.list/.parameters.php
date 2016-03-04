@@ -35,7 +35,7 @@ if ($arCurrentValues['IBLOCK_TYPE'] != '-')
 	{
         if ($item['CODE'] == $arCurrentValues['IBLOCK_CODE'])
         {
-            $currentIblockId = $arCurrentValues['IBLOCK_CODE'];
+            $currentIblockId = $item['ID'];
         }
 		$iblocks[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
 	}
@@ -165,7 +165,7 @@ $arComponentParameters = array(
                 'ACTIVE_TO' => 'Окончание активности',
                 'PREVIEW_TEXT' => 'Описание для анонса',
                 'PREVIEW_PICTURE' => 'Картинка для анонса',
-                'DETAIL_TEXT' => 'Детальное для анонса',
+                'DETAIL_TEXT' => 'Детальное описание',
                 'DETAIL_PICTURE' => 'Детальная картинка',
                 'IBLOCK_SECTION_ID' => 'ID раздела',
                 'TAGS' => 'Теги',
@@ -178,6 +178,7 @@ $arComponentParameters = array(
 			'NAME' => 'Свойства элементов',
 			'TYPE' => 'LIST',
 			'MULTIPLE' => 'Y',
+			'SIZE' => 8,
 			'VALUES' => $elementProperties,
 			'ADDITIONAL_VALUES' => 'Y',
 		),

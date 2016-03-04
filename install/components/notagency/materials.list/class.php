@@ -50,6 +50,12 @@ class MaterialsList extends ComponentsBase
         
         $arParams['PREPROD_SERVER'] = defined('PREPROD_SERVER') && PREPROD_SERVER;
 
+        if(strlen($arParams['FILTER_NAME']) > 0 && preg_match('/^[A-Za-z_][A-Za-z01-9_]*$/', $arParams['FILTER_NAME']))
+        {
+            $this->elementsFilter = array_merge($this->elementsFilter, $GLOBALS[$arParams['FILTER_NAME']]);
+            $this->addCacheAdditionalId($GLOBALS[$arParams['FILTER_NAME']]);
+        }
+
         return $arParams;
     }
 
@@ -182,11 +188,14 @@ class MaterialsList extends ComponentsBase
     protected function selectElements()
     {
         $elements = [];
+        //order
         $sort = [
             $this->arParams['ELEMENT_SORT_BY1'] => $this->arParams['ELEMENT_SORT_ORDER1'],
             $this->arParams['ELEMENT_SORT_BY2'] => $this->arParams['ELEMENT_SORT_ORDER2'],
             $this->arParams['ELEMENT_SORT_BY3'] => $this->arParams['ELEMENT_SORT_ORDER3'],
         ];
+
+        //filter
         $filter = [
             'IBLOCK_ID'=>$this->arResult['IBLOCK']['ID'],
         ];
@@ -217,6 +226,7 @@ class MaterialsList extends ComponentsBase
             $filter = array_merge($filter, $this->elementsFilter);
         }
 
+        //nav
         $nav = false;
         if ($this->arParams['PAGING'] == 'Y')
         {
@@ -232,6 +242,7 @@ class MaterialsList extends ComponentsBase
             ];
         }
 
+        //select
         if (is_array($this->arParams['ELEMENT_FIELDS']) && count($this->arParams['ELEMENT_FIELDS']))
         {
             $select = array_merge($this->arParams['ELEMENT_FIELDS'], ['ID', 'IBLOCK_ID']);
@@ -303,14 +314,17 @@ class MaterialsList extends ComponentsBase
                         if ($prop['PROPERTY_TYPE'] == 'L')
                         {
                             $props[$prop['CODE']]['VALUE_XML_ID'][] = $prop['VALUE_XML_ID'];
+                            $props[$prop['CODE']]['VALUE_ENUM'][] = $prop['VALUE_ENUM'];
                         }
                     }
-                    else{
+                    else
+                    {
                         $props[$prop['CODE']]['DESCRIPTION'] = $prop['DESCRIPTION'];
                         $props[$prop['CODE']]['VALUE'] = $prop['VALUE'];
                         if ($prop['PROPERTY_TYPE'] == 'L')
                         {
                             $props[$prop['CODE']]['VALUE_XML_ID'] = $prop['VALUE_XML_ID'];
+                            $props[$prop['CODE']]['VALUE_ENUM'] = $prop['VALUE_ENUM'];
                         }
                     }
                 }

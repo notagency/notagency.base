@@ -5,7 +5,6 @@
  * @copyright Copyright © 2016 NotAgency
  */
 
-
 namespace Notagency\Base;
 
 class Tools

@@ -385,10 +385,12 @@ class MaterialsList extends ComponentsBase
         {
             return false;
         }
+        //получаем размер файла в читабельном формате с единицами измерения
         if (!empty($file['FILE_SIZE']))
         {
             $file['DISPLAY_SIZE'] = Tools::formatFileSize($file['FILE_SIZE']);
         }
+        //парсим имя файла и расширение через pathinfo
         if (!empty($file['ORIGINAL_NAME']))
         {
             $fileInfo = pathinfo($file['ORIGINAL_NAME']);

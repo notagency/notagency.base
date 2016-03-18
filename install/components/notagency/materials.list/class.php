@@ -74,8 +74,8 @@ class MaterialsList extends ComponentsBase
     protected function executeMain()
     {
         $this->selectIblock();
-        $this->selectElements();
         $this->selectSections();
+        $this->selectElements();
         $this->buildTree();
         $this->setPanelButtons();
     }
@@ -130,17 +130,13 @@ class MaterialsList extends ComponentsBase
             'GLOBAL_ACTIVE'=>'Y',
             'IBLOCK_ID' => $this->arResult['IBLOCK']['ID'],
         ];
-        if (intval($this->arResult['ELEMENT']['IBLOCK_SECTION_ID']))
+        if ($this->arParams['SECTION_CODE'])
         {
-            $filter['ID'] = $this->arResult['ELEMENT']['IBLOCK_SECTION_ID'];
+            $filter['CODE'] = $this->arParams['SECTION_CODE'];
         }
         else if ($this->arParams['SECTION_ID'])
         {
             $filter['ID'] = $this->arParams['SECTION_ID'];
-        }
-        else if ($this->arParams['SECTION_CODE'])
-        {
-            $filter['CODE'] = $this->arParams['SECTION_CODE'];
         }
         $select = [
             'ID',

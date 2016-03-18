@@ -6,7 +6,8 @@ namespace Notagency\Components;
 class CatalogDetail extends MaterialsDetail
 {
     protected $needModules = [
-        'catalog'
+        'iblock',
+        'catalog',
     ];
 
     protected function processElement($element)

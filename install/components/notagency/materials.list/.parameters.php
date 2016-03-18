@@ -290,10 +290,10 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 		),
         'SECTION_FIELDS' => array(
 			'PARENT' => 'DATA_SOURCE',
-			'NAME' => 'Свойства разделов',
+			'NAME' => 'Поля разделов',
 			'TYPE' => 'LIST',
             'MULTIPLE' => 'Y',
-            'SIZE' => 8,
+            'SIZE' => 3,
             'VALUES' => [
                 'NAME' => 'Название',
                 'CODE' => 'Символьный код',

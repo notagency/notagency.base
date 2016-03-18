@@ -55,7 +55,16 @@ class MaterialsList extends ComponentsBase
             $this->elementsFilter = array_merge($this->elementsFilter, $GLOBALS[$arParams['FILTER_NAME']]);
             $this->addCacheAdditionalId($GLOBALS[$arParams['FILTER_NAME']]);
         }
-
+        
+        //удаляем пустые элементы массива
+        if (!empty($arParams['ELEMENT_PROPERTIES']))
+        {
+            $arParams['ELEMENT_PROPERTIES'] = array_filter($arParams['ELEMENT_PROPERTIES']); 
+        }
+        if (!empty($arParams['ELEMENT_FIELDS']))
+        {
+            $arParams['ELEMENT_FIELDS'] = array_filter($arParams['ELEMENT_FIELDS']); 
+        }
         return $arParams;
     }
 

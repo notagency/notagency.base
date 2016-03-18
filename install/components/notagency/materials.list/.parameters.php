@@ -288,6 +288,19 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 			'VALUES' => $arSorts,
 			'ADDITIONAL_VALUES' => 'Y',
 		),
+        'SECTION_FIELDS' => array(
+			'PARENT' => 'DATA_SOURCE',
+			'NAME' => 'Свойства разделов',
+			'TYPE' => 'LIST',
+            'MULTIPLE' => 'Y',
+            'SIZE' => 8,
+            'VALUES' => [
+                'NAME' => 'Название',
+                'CODE' => 'Символьный код',
+                'IBLOCK_SECTION_ID' => 'ID родительского раздела',
+            ],
+            'ADDITIONAL_VALUES' => 'Y',
+		),
         'SECTION_PROPERTIES' => array(
 			'PARENT' => 'DATA_SOURCE',
 			'NAME' => 'Свойства разделов',

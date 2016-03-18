@@ -357,11 +357,7 @@ class MaterialsList extends ComponentsBase
                         }
                         if ($file = \CFile::GetFileArray($fileId))
                         {
-                            $file['DISPLAY_SIZE'] = Tools::formatFileSize($file['FILE_SIZE']);
-                            $originalName = explode('.', $file['ORIGINAL_NAME']);
-                            $file['FILE_EXTENSION'] = $originalName[count($originalName) - 1];
-                            $file['FILE_NAME'] = str_replace('.' . $file['FILE_EXTENSION'], '', $originalName);
-                            $property['VALUE_DETAILS'][] = $file;
+                            $property['VALUE_DETAILS'][] = $this->processFile($file);
                         }
                     }
                 }
@@ -369,14 +365,39 @@ class MaterialsList extends ComponentsBase
                 {
                     if ($file = \CFile::GetFileArray($property['VALUE']))
                     {
-                        $file['DISPLAY_SIZE'] = Tools::formatFileSize($file['FILE_SIZE']);
-                        list($file['FILE_NAME'], $file['FILE_EXTENSION']) = explode('.', $file['ORIGINAL_NAME']);
-                        $property['VALUE_DETAILS'] = $file;
+                        $property['VALUE_DETAILS'] = $this->processFile($file);
                     }
                 }
             }
         }
         return $element;
+    }
+
+    /**
+     * Обработка файла
+     * @param array $file - результат CFile::GetFileArray()
+     * @return array $file
+     * @throws \Exception
+     */
+    protected function processFile($file)
+    {
+        if (!is_array($file))
+        {
+            return false;
+        }
+        //получаем размер файла в читабельном формате с единицами измерения
+        if (!empty($file['FILE_SIZE']))
+        {
+            $file['DISPLAY_SIZE'] = Tools::formatFileSize($file['FILE_SIZE']);
+        }
+        //парсим имя файла и расширение через pathinfo
+        if (!empty($file['ORIGINAL_NAME']))
+        {
+            $fileInfo = pathinfo($file['ORIGINAL_NAME']);
+            $file['FILE_NAME'] = $fileInfo['filename'];
+            $file['FILE_EXTENSION'] = $fileInfo['extension'];
+        }
+        return $file;
     }
 
     /**

@@ -152,21 +152,11 @@ class MaterialsList extends ComponentsBase
             $select = array_merge($select, $this->arParams['SECTION_PROPERTIES']);
         }
         $rs = \CIBlockSection::GetList($sort, $filter, false, $select);
-        if ($this->arParams['SECTION_CODE'])
+        if ($this->arParams['SECTION_CODE'] || $this->arParams['SECTION_ID'])
         {
             if ($section = $rs->GetNext())
             {
-                $sections[] = $section;
-            }
-            else
-            {
-                define('ERROR_404', 'Y');
-            }
-        }
-        else if ($this->arParams['SECTION_ID'])
-        {
-            if ($section = $rs->Fetch())
-            {
+                $section = $this->processSection($section);
                 $sections[] = $section;
             }
             else
@@ -178,14 +168,29 @@ class MaterialsList extends ComponentsBase
         {
             while ($section = $rs->GetNext())
             {
+                $section = $this->processSection($section);
                 $sections[] = $section;
             }
         }
         $this->arResult['SECTIONS'] = $sections;
         if (count($sections) == 1)
         {
+            unset($this->arResult['SECTIONS']);
             $this->arResult['SECTION'] = current($sections);
         }
+    }
+    
+     /**
+     * Вызывается в цикле для каждого раздела
+     * @param array $section - результат CIBlockSection::GetList()
+     * @return array $section
+     * @throws \Exception
+     */
+    protected function processSection($section)
+    {
+        //наследуемые свойства
+        $section['IPROPERTY_VALUES'] = (new \Bitrix\Iblock\InheritedProperty\ElementValues($section['IBLOCK_ID'], $section['ID']))->getValues();        
+        return $section;
     }
 
     /**
@@ -350,6 +355,7 @@ class MaterialsList extends ComponentsBase
     protected function processElement($element)
     {
         $element['DISPLAY_ACTIVE_FROM'] = self::formatDisplayDate($element['DATE_ACTIVE_FROM'], $this->arParams['ACTIVE_DATE_FORMAT']);
+        $element['IPROPERTY_VALUES'] = (new \Bitrix\Iblock\InheritedProperty\ElementValues($element['IBLOCK_ID'], $element['ID']))->getValues();
         foreach ($element['PROPERTIES'] as &$property)
         {
             //обработка свойства типа "Файл"

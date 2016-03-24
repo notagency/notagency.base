@@ -41,11 +41,10 @@ class MaterialsList extends ComponentsBase
         if ($arParams['PAGE']) $arParams['PAGE'] = intval($_GET['page']);
         if ($arParams['PAGING'] == 'Y')
         {
+            \CPageOption::SetOptionString('main', 'nav_page_in_session', 'N'); //не сохраняем в сессии параметры пагинации потому что это сбивает с толку пользователей
             $nav = \CDBResult::GetNavParams();
             if ($nav)  $arParams['PAGE'] = intval($nav['PAGEN']);
             else if ($arParams['PAGE']) $arParams['PAGE'] = intval($_GET['page']);
-            //не сохраняем в сессии параметры пагинации потому что это сбивает с толку пользователей
-            \CPageOption::SetOptionString("main", "nav_page_in_session", "N");
         }
         
         $arParams['PREPROD_SERVER'] = defined('PREPROD_SERVER') && PREPROD_SERVER;

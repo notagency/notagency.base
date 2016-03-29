@@ -15,4 +15,13 @@ trait JsonFormatter
         $this->applyJsonHeaders();
         echo json_encode($this->arResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
+    
+    protected function catchException(\Exception $exception)
+    {
+        $this->arResult = [
+            'error' => true,
+            'message' => $exception->getMessage(),
+        ];
+        $this->showResult();
+    }
 }

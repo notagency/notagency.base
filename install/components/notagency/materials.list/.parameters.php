@@ -3,8 +3,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 /** @var array $arCurrentValues */
 
 $arSorts = [
-    'ASC'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_ASC'), 
-    'DESC'=>GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_DESC')
+    'ASC'  => 'По возрастанию', 
+    'DESC' => 'По убыванию',
 ];
 
 if(!CModule::IncludeModule('iblock'))
@@ -78,27 +78,27 @@ $arComponentParameters = array(
 	'PARAMETERS' => array(
 		'IBLOCK_TYPE' => array(
 			'PARENT' => 'BASE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LIST_TYPE'),
+			'NAME' => 'Тип инфоблоков',
 			'TYPE' => 'LIST',
 			'VALUES' => $iblockTypes,
 			'REFRESH' => 'Y',
 		),
 		'IBLOCK_CODE' => array(
 			'PARENT' => 'BASE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_NEWS_LIST_CODE'),
+			'NAME' => 'Код инфоблока',
 			'TYPE' => 'LIST',
 			'VALUES' => $iblocks,
 			'REFRESH' => 'Y',
 		),
 		'ELEMENTS_COUNT' => array(
 			'PARENT' => 'BASE',
-			'NAME' => GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_LIST_CONT'),
+			'NAME' => 'Количество записей в списке',
 			'TYPE' => 'STRING',
 			'DEFAULT' => '20',
 		),
         'SELECT_SECTIONS' => array(
             'PARENT' => 'BASE',
-            'NAME' => GetMessage('NIK_ELEMENTS_LIST_SELECT_SECTIONS'),
+            'NAME' => 'Запрашивать разделы инфоблока',
             'TYPE' => 'CHECKBOX',
             'DEFAULT' => 'N',
             'REFRESH' => 'Y',
@@ -184,9 +184,15 @@ $arComponentParameters = array(
 		),
         'FILTER_NAME' => array(
 			'PARENT' => 'ADDITIONAL_SETTINGS',
-			'NAME' => 'Название переменной в которой содержится массив фильтрации элементов инфоблока',
+			'NAME' => 'Название PHP-переменной фильтра элементов инфоблока',
 			'TYPE' => 'STRING',
 			'DEFAULT' => '',
+		),
+        'SHOW_PANEL_BUTTONS' => array(
+			'PARENT' => 'ADDITIONAL_SETTINGS',
+			'NAME' => 'Выводить кнопки управления контентом в режиме редактирования в публичной части',
+			'TYPE' => 'CHECKBOX',
+			'DEFAULT' => 'Y',
 		),
         'CUSTOM_DATE_FORMAT' => array(
 			'PARENT' => 'ADDITIONAL_SETTINGS',
@@ -195,17 +201,10 @@ $arComponentParameters = array(
 			'DEFAULT' => 'N',
             'REFRESH' => 'Y',
 		),
-        'SHOW_PANEL_BUTTONS' => array(
-			'PARENT' => 'ADDITIONAL_SETTINGS',
-			'NAME' => GetMessage('NIK_ELEMENTS_LIST_SHOW_PANEL_BUTTONS'),
-			'TYPE' => 'CHECKBOX',
-			'DEFAULT' => 'Y',
-            'REFRESH' => 'Y',
-		),
 		'CACHE_TIME'  =>  array('DEFAULT'=>36000000),
 		'CACHE_GROUPS' => array(
 			'PARENT' => 'CACHE_SETTINGS',
-			'NAME' => GetMessage('CP_BNL_CACHE_GROUPS'),
+			'NAME' => 'Учитывать права доступа',
 			'TYPE' => 'CHECKBOX',
 			'DEFAULT' => 'Y',
 		),
@@ -229,7 +228,7 @@ if ($arCurrentValues['SELECT_BY_SECTION'] == 'ID')
 {
     $arComponentParameters['PARAMETERS']['SECTION_ID'] = array(
         'PARENT' => 'BASE',
-        'NAME' => GetMessage('IBLOCK_SECTION_ID'),
+        'NAME' => 'ID раздела',
         'TYPE' => 'STRING',
         'DEFAULT' => '',
     );
@@ -238,7 +237,7 @@ else if ($arCurrentValues['SELECT_BY_SECTION'] == 'CODE')
 {
     $arComponentParameters['PARAMETERS']['SECTION_CODE'] = array(
         'PARENT' => 'BASE',
-        'NAME' => GetMessage('IBLOCK_SECTION_CODE'),
+        'NAME' => 'Код раздела',
         'TYPE' => 'STRING',
         'DEFAULT' => '',
     );
@@ -247,10 +246,17 @@ if (in_array($arCurrentValues['SELECT_BY_SECTION'], ['ID', 'CODE']))
 {
     $arComponentParameters['PARAMETERS']['INCLUDE_SUBSECTIONS'] = array(
         'PARENT' => 'BASE',
-        'NAME' => 'Выбирать элементы из всех подразделов раздела',
+        'NAME' => 'Выбирать элементы из всех подразделов выбранного раздела',
         'TYPE' => 'CHECKBOX',
         'DEFAULT' => 'Y',
     );
+    $arComponentParameters['PARAMETERS']['SELECT_SECTIONS_TREE'] = array(
+        'PARENT' => 'BASE',
+        'NAME' => 'Выбирать всё дерево разделов выбранного раздела',
+        'TYPE' => 'CHECKBOX',
+        'DEFAULT' => 'N',
+    );
+    CIBlockParameters::Add404Settings($arComponentParameters, $arCurrentValues);
 }
 
 if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
@@ -298,6 +304,8 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
                 'NAME' => 'Название',
                 'CODE' => 'Символьный код',
                 'IBLOCK_SECTION_ID' => 'ID родительского раздела',
+                'DESCRIPTION' => 'Описание',
+                'PICTURE' => 'Изображение',
             ],
             'ADDITIONAL_VALUES' => 'Y',
 		),
@@ -315,6 +323,6 @@ if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
 if ($arCurrentValues['CUSTOM_DATE_FORMAT'] == 'Y')
 {
     $arComponentParameters['PARAMETERS'] = array_merge($arComponentParameters['PARAMETERS'], array(
-        'ACTIVE_DATE_FORMAT' => CIBlockParameters::GetDateFormat(GetMessage('NOTAGENCY_MATERIALS_LIST_COMPONENT_IBLOCK_DESC_ACTIVE_DATE_FORMAT'), 'ADDITIONAL_SETTINGS'),
+        'ACTIVE_DATE_FORMAT' => CIBlockParameters::GetDateFormat('Формат показа даты', 'ADDITIONAL_SETTINGS'),
     ));
 }

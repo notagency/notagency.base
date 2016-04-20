@@ -68,25 +68,21 @@ else if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'CODE')
     );
 }
 
-
-if ($arCurrentValues['SELECT_SECTIONS'] == 'Y')
-{
-    $arComponentParameters['PARAMETERS']['INCLUDE_SECTIONS_INTO_CHAIN'] = array(
-        'PARENT' => 'ADDITIONAL_SETTINGS',
-        'NAME' => 'Добавлять название раздела в навигационную цепочку на детальной станице',
-        'TYPE' => 'CHECKBOX',
-        'DEFAULT' => 'Y',
-    );
-}
+$arComponentParameters['PARAMETERS']['INCLUDE_SECTIONS_NAMES_INTO_CHAIN'] = array(
+    'PARENT' => 'ADDITIONAL_SETTINGS',
+    'NAME' => 'Добавлять названия разделов в навигационную цепочку',
+    'TYPE' => 'CHECKBOX',
+    'DEFAULT' => 'Y',
+);
 
 $arComponentParameters['PARAMETERS']['INCLUDE_INTO_CHAIN'] = array(
     'PARENT' => 'ADDITIONAL_SETTINGS',
-    'NAME' => 'Добавить сущность в навигационную цепочку на детальной станице',
+    'NAME' => 'Добавить поля или свойства элемента инфоблока в навигационную цепочку',
     'TYPE' => 'LIST',
     'VALUES' => [
         '' => 'Нет',
-        'FIELD' => 'Значение поля элемента инфоблока',
-        'PROPERTY' => 'Значение свойства элемента инфоблока',
+        'FIELD' => 'Поля',
+        'PROPERTY' => 'Свойства',
     ],
     'REFRESH' => 'Y',
 );
@@ -95,7 +91,7 @@ if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD')
 {
     $arComponentParameters['PARAMETERS']['INCLUDE_FIELD_INTO_CHAIN'] = array(
         'PARENT' => 'ADDITIONAL_SETTINGS',
-        'NAME' => 'Добавить поле в навигационную цепочку на детальной станице',
+        'NAME' => 'Добавить поля в навигационную цепочку (разделить точкой, если несколько)',
         'TYPE' => 'LIST',
         'VALUES' => [
             'NAME' => $fields['NAME'],
@@ -108,7 +104,7 @@ else if($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'PROPERTY')
 {
     $arComponentParameters['PARAMETERS']['INCLUDE_PROPERTY_INTO_CHAIN'] = array(
         'PARENT' => 'ADDITIONAL_SETTINGS',
-        'NAME' => 'Добавить свойство в навигационную цепочку на детальной станице',
+        'NAME' => 'Добавить свойства в навигационную цепочку (разделить точкой, если несколько)',
         'TYPE' => 'LIST',
         'VALUES' => $elementProperties,
         'ADDITIONAL_VALUES' => 'Y',
@@ -128,3 +124,7 @@ unset($arComponentParameters['PARAMETERS']['SECTION_SORT_BY1']);
 unset($arComponentParameters['PARAMETERS']['SECTION_SORT_BY2']);
 unset($arComponentParameters['PARAMETERS']['SECTION_SORT_ORDER1']);
 unset($arComponentParameters['PARAMETERS']['SECTION_SORT_ORDER2']);
+unset($arComponentParameters['PARAMETERS']['SELECT_BY_SECTION']);
+unset($arComponentParameters['PARAMETERS']['SECTION_ID']);
+unset($arComponentParameters['PARAMETERS']['SECTION_CODE']);
+unset($arComponentParameters['PARAMETERS']['SELECT_SECTIONS']);

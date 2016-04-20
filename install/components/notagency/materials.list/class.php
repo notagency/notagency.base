@@ -108,15 +108,48 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Выбирает поля разделов/раздела
-     * Один раздел  - $arResult['SECTION']
-     * Более одного - $arResult['SECTIONS']
+     * Возвращает массив полей для выборки у разделов
+     * @return array
+     */
+    protected function getSectionsSelect()
+    {
+        $select = [
+            'ID',
+            'IBLOCK_ID',
+            'NAME',
+            'CODE',
+            'DEPTH_LEVEL',
+            'LEFT_MARGIN',
+            'RIGHT_MARGIN',
+            'IBLOCK_SECTION_ID',
+        ];
+        if (is_array($this->arParams['SECTION_FIELDS']) && count($this->arParams['SECTION_FIELDS']))
+        {
+            $select = array_merge($select, $this->arParams['SECTION_FIELDS']);
+        }
+        if (is_array($this->arParams['SECTION_PROPERTIES']) && count($this->arParams['SECTION_PROPERTIES']))
+        {
+            $select = array_merge($select, $this->arParams['SECTION_PROPERTIES']);
+        }
+        return $select;
+    }
+    
+    /**
+     * Выбирает разделы
+     * Список разделов в $arResult['SECTIONS']
+     * Выбранный раздел в $arResult['CURRENT_SECTION']
      * @throws \Exception
      */
     protected function selectSections()
     {
         $sections = [];
-        if ($this->arParams['SELECT_SECTIONS'] != 'Y')
+        $currentSection = null;
+        $needParticularSection = false;
+        if (
+            $this->arParams['SELECT_SECTIONS'] != 'Y'
+            && !$this->arParams['SECTION_CODE']
+            && !$this->arParams['SECTION_ID']
+        )
         {
             return;
         }
@@ -132,52 +165,33 @@ class MaterialsList extends ComponentsBase
         if ($this->arParams['SECTION_CODE'])
         {
             $filter['CODE'] = $this->arParams['SECTION_CODE'];
+            $needParticularSection = true;
         }
         else if ($this->arParams['SECTION_ID'])
         {
             $filter['ID'] = $this->arParams['SECTION_ID'];
+            $needParticularSection = true;
         }
-        $select = [
-            'ID',
-            'IBLOCK_ID',
-            'NAME',
-            'CODE',
-        ];
-        if (is_array($this->arParams['SECTION_FIELDS']) && count($this->arParams['SECTION_FIELDS']))
-        {
-            $select = array_merge($select, $this->arParams['SECTION_FIELDS']);
-        }
-        if (is_array($this->arParams['SECTION_PROPERTIES']) && count($this->arParams['SECTION_PROPERTIES']))
-        {
-            $select = array_merge($select, $this->arParams['SECTION_PROPERTIES']);
-        }
+        $select = $this->getSectionsSelect();
         $rs = \CIBlockSection::GetList($sort, $filter, false, $select);
-        if ($this->arParams['SECTION_CODE'] || $this->arParams['SECTION_ID'])
+        while ($section = $rs->GetNext())
         {
-            if ($section = $rs->GetNext())
-            {
-                $section = $this->processSection($section);
-                $sections[] = $section;
-            }
-            else
-            {
-                define('ERROR_404', 'Y');
-            }
+            $sections[] = $this->processSection($section);
         }
-        else
+        
+        if ($needParticularSection && !empty($sections))
         {
-            while ($section = $rs->GetNext())
-            {
-                $section = $this->processSection($section);
-                $sections[] = $section;
-            }
+            $currentSection = current($sections);
         }
+
+        if ($currentSection && $this->arParams['SELECT_SECTIONS_TREE'] == 'Y')
+        {
+            //Если выбран какой-то конкретный раздел (по ID, или коду) и нужно получить всю его ветку
+            $sections = $this->getSectionsTree($currentSection['LEFT_MARGIN'], $currentSection['RIGHT_MARGIN']);
+        }
+        
         $this->arResult['SECTIONS'] = $sections;
-        if (count($sections) == 1)
-        {
-            unset($this->arResult['SECTIONS']);
-            $this->arResult['SECTION'] = current($sections);
-        }
+        $this->arResult['CURRENT_SECTION'] = $currentSection;
     }
     
      /**
@@ -189,10 +203,44 @@ class MaterialsList extends ComponentsBase
     protected function processSection($section)
     {
         //наследуемые свойства
-        $section['IPROPERTY_VALUES'] = (new \Bitrix\Iblock\InheritedProperty\ElementValues($section['IBLOCK_ID'], $section['ID']))->getValues();        
+        if ($inheritedPropertyValues = (new \Bitrix\Iblock\InheritedProperty\SectionValues($section['IBLOCK_ID'], $section['ID']))->getValues())
+        {
+            $section['IPROPERTY_VALUES'] = $inheritedPropertyValues;
+        }
         return $section;
     }
 
+    /**
+     * Выбирает всю ветку разделов по левой и правой границе какого-либо конкретного раздела
+     * @param int $leftMargin - nestedSets
+     * @param int $rightMargin - nestedSets
+     * @return array
+     */
+    protected function getSectionsTree($leftMargin, $rightMargin)
+    {
+        if (!$leftMargin || !$rightMargin)
+        {
+            return [];
+        }
+        $sections = [];
+        $sort = [
+            'LEFT_MARGIN' => 'ASC',
+        ];
+        $filter = [
+            'GLOBAL_ACTIVE'=>'Y',
+            'IBLOCK_ID' => $this->arResult['IBLOCK']['ID'],            
+            '<LEFT_BORDER' => $rightMargin,
+            '>RIGHT_BORDER' => $leftMargin,
+        ];
+        $select = $this->getSectionsSelect();
+        $rs = \CIBlockSection::GetList($sort, $filter, false, $select);
+        while ($section = $rs->GetNext())
+        {
+            $sections[] = $this->processSection($section);
+        }
+        return $sections;
+    }
+    
     /**
      * Выбирает поля элемента, результат в $arResult['ELEMENTS']
      * Постраничная навигация - $arResult['NAV_STRING']
@@ -355,7 +403,10 @@ class MaterialsList extends ComponentsBase
     protected function processElement($element)
     {
         $element['DISPLAY_ACTIVE_FROM'] = self::formatDisplayDate($element['DATE_ACTIVE_FROM'], $this->arParams['ACTIVE_DATE_FORMAT']);
-        $element['IPROPERTY_VALUES'] = (new \Bitrix\Iblock\InheritedProperty\ElementValues($element['IBLOCK_ID'], $element['ID']))->getValues();
+        if ($inheritedPropertyValues = (new \Bitrix\Iblock\InheritedProperty\ElementValues($element['IBLOCK_ID'], $element['ID']))->getValues())
+        {
+            $element['IPROPERTY_VALUES'] = $inheritedPropertyValues;
+        }
         foreach ($element['PROPERTIES'] as &$property)
         {
             //обработка свойства типа "Файл"
@@ -382,6 +433,16 @@ class MaterialsList extends ComponentsBase
                         $property['VALUE_DETAILS'] = $this->processFile($file);
                     }
                 }
+            }
+        }
+        //выберем ID разделов к которым привязан данный элемент инфоблока т.к. IBLOCK_SECTION_ID может содержать только один ID какого-то раздела
+        $rsSections = \CIBlockElement::GetElementGroups($element['ID'], true, ['ID']);
+        if ($rsSections->SelectedRowsCount() > 1)
+        {
+            $element['IBLOCK_SECTION_ID'] = [];
+            while ($section = $rsSections->Fetch())
+            {
+                $element['IBLOCK_SECTION_ID'][] = $section['ID'];
             }
         }
         return $element;
@@ -419,17 +480,28 @@ class MaterialsList extends ComponentsBase
      */
     protected function buildTree()
     {
-        if (!empty($this->arResult['SECTIONS']) && !empty($this->arResult['ELEMENTS']))
+        if (!empty($this->arResult['SECTIONS']))
         {
             foreach ($this->arResult['SECTIONS'] as $section)
             {
                 $this->arResult['TREE'][$section['ID']] = $section;
             }
-            foreach ($this->arResult['ELEMENTS'] as $element)
+            
+            if (!empty($this->arResult['ELEMENTS']))
             {
-                if (intval($element['IBLOCK_SECTION_ID']) > 0)
+                foreach ($this->arResult['ELEMENTS'] as $element)
                 {
-                    $this->arResult['TREE'][$element['IBLOCK_SECTION_ID']]['ELEMENTS'][] = $element;
+                    if (is_array($element['IBLOCK_SECTION_ID']))
+                    {
+                        foreach ($element['IBLOCK_SECTION_ID'] as $sectionId)
+                        {
+                            $this->arResult['TREE'][$sectionId]['ELEMENTS'][] = $element;
+                        }
+                    }
+                    else if (intval($element['IBLOCK_SECTION_ID']) > 0)
+                    {
+                        $this->arResult['TREE'][$element['IBLOCK_SECTION_ID']]['ELEMENTS'][] = $element;
+                    }
                 }
             }
         }
@@ -472,6 +544,41 @@ class MaterialsList extends ComponentsBase
         if($this->arParams['SHOW_PANEL_BUTTONS'] == 'Y' && $APPLICATION->GetShowIncludeAreas())
         {
             $this->AddIncludeAreaIcons(\CIBlock::GetComponentMenu($APPLICATION->GetPublicShowMode(), $buttons));
+        }
+    }
+
+    public function showResult()
+    {
+        if (
+            ($this->arParams['SECTION_CODE'] || $this->arParams['SECTION_ID'])
+            && empty($this->arResult['SECTIONS'])
+        )
+        {
+            $this->handle404();
+        }
+        else
+        {
+            $this->includeComponentTemplate($this->templatePage);
+        }
+    }
+    
+    public function handle404()
+    {
+        $this->abortCache();
+        if ($this->arParams['SET_STATUS_404'] === 'Y')
+        {
+            $this->return404();
+        }
+        if ($this->arParams['SHOW_404'] === 'Y')
+        {
+            global $APPLICATION;
+            $APPLICATION->RestartBuffer();
+            require \Bitrix\Main\Application::getDocumentRoot() . SITE_TEMPLATE_PATH . '/header.php';
+            require \Bitrix\Main\Application::getDocumentRoot() . '/404.php';
+        }
+        else
+        {
+            $this->includeComponentTemplate($this->templatePage);
         }
     }
 }

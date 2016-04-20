@@ -12,6 +12,7 @@ class CatalogDetail extends MaterialsDetail
 
     protected function processElement($element)
     {
+        $element = parent::processElement($element);
         $element = $this->processAmount($element);
         $element = $this->processPrice($element);
         return $element;

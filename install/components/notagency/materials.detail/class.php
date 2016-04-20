@@ -12,6 +12,7 @@ class MaterialsDetail extends MaterialsList
     public function onPrepareComponentParams($arParams)
     {
         $arParams = parent::onPrepareComponentParams($arParams);
+        $arParams['SELECT_SECTIONS'] = 'N';
         $arParams['ELEMENTS_COUNT'] = 1;
         $arParams['PAGING'] = 'N';
         if (array_key_exists($arParams['REQUEST_ELEMENT_CODE'], $_REQUEST) && !empty($_REQUEST[$arParams['REQUEST_ELEMENT_CODE']]))
@@ -44,12 +45,44 @@ class MaterialsDetail extends MaterialsList
             $this->arResult['ELEMENT'] = $this->arResult['ELEMENTS'][0];
         }
         unset($this->arResult['ELEMENTS']);
+        if (intval($this->arResult['ELEMENT']['IBLOCK_SECTION_ID']))
+        {
+            $this->arParams['SELECT_SECTIONS_TREE'] = 'Y';
+            $this->arParams['SECTION_ID'] = $this->arResult['ELEMENT']['IBLOCK_SECTION_ID'];
+            $this->selectSections();
+        }
+    }
+    
+    public function showResult()
+    {
+        if ($is404 = empty($this->arResult['ELEMENT']))
+        {
+            $this->handle404();
+        }
+        else
+        {
+            $this->includeComponentTemplate($this->templatePage);
+        }
     }
 
     protected function executeEpilog()
     {
+        $this->handleNavChain();
+    }
+    
+    protected function handleNavChain()
+    {
         global $APPLICATION;
-
+        
+        if ($includeSectionNameIntoChain = $this->arParams['INCLUDE_SECTIONS_NAMES_INTO_CHAIN'] == 'Y')
+        {
+            //считаем, что разделы уже отсортированы по margin_left в maetrials.list
+            foreach ($this->arResult['SECTIONS'] as $section)
+            {
+                $APPLICATION->AddChainItem(trim($section['NAME']), $section['SECTION_PAGE_URL']);
+            }
+        }
+        
         $includeIntoChain = $this->arParams['INCLUDE_INTO_CHAIN'];
         
         $chainFieldNames = explode('.', $this->arParams['INCLUDE_FIELD_INTO_CHAIN']);
@@ -95,34 +128,6 @@ class MaterialsDetail extends MaterialsList
         if (!empty($chainEntity))
         {
             $APPLICATION->AddChainItem(trim($chainEntity));
-        }
-    }
-    
-    public function showResult()
-    {
-        if ($is404 = empty($this->arResult['ELEMENT']))
-        {
-            $this->abortCache();
-            if ($this->arParams['SET_STATUS_404'] === 'Y')
-            {
-                $this->return404();
-            }
-            if ($this->arParams['SHOW_404'] === 'Y')
-            {
-                global $APPLICATION;
-                $APPLICATION->RestartBuffer();
-                require \Bitrix\Main\Application::getDocumentRoot() . SITE_TEMPLATE_PATH . '/header.php';
-                require \Bitrix\Main\Application::getDocumentRoot() . '/404.php';
-            }
-            else
-            {
-                parent::showResult();
-            }
-        }
-        else
-        {
-            parent::showResult();
-
         }
     }
 }

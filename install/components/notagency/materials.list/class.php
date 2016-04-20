@@ -495,12 +495,18 @@ class MaterialsList extends ComponentsBase
                     {
                         foreach ($element['IBLOCK_SECTION_ID'] as $sectionId)
                         {
-                            $this->arResult['TREE'][$sectionId]['ELEMENTS'][] = $element;
+                            if (array_key_exists($sectionId, $this->arResult['TREE']))
+                            {
+                                $this->arResult['TREE'][$sectionId]['ELEMENTS'][] = $element;
+                            }
                         }
                     }
                     else if (intval($element['IBLOCK_SECTION_ID']) > 0)
                     {
-                        $this->arResult['TREE'][$element['IBLOCK_SECTION_ID']]['ELEMENTS'][] = $element;
+                        if (array_key_exists($element['IBLOCK_SECTION_ID'], $this->arResult['TREE']))
+                        {
+                            $this->arResult['TREE'][$element['IBLOCK_SECTION_ID']]['ELEMENTS'][] = $element;
+                        }
                     }
                 }
             }

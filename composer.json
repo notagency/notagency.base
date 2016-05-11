@@ -1,5 +1,5 @@
 {
-  "name": "notagency/base",
+  "name": "notagency/notagency.base",
   "description": "Bitrix D7 framework missing components",
   "keywords": ["bitrix", "components", "module"],
   "homepage": "http://notagency.ru",

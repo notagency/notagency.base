@@ -27,8 +27,7 @@
 
 ```
 #!bash
-composer config repositories.notagency vcs git@bitbucket.org:notagency/notagency.base.git
-composer require notagency/base
+composer require notagency/notagency.base
 ```
 
 Модуль должен появится в списке *Marketplace → Установленные решения*.

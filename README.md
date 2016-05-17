@@ -22,7 +22,7 @@
 
 ## Установка
 
-Модуль распространяется через [composer](https://getcomposer.org/doc/00-intro.md).
+Модуль распространяется через [composer](https://getcomposer.org/doc/00-intro.md) и опубликован на [packagist.org](https://packagist.org/packages/notagency/notagency.base).
 В корне сайта, где установлен битрикс, необходимо выполнить:
 
 ```bash
@@ -97,7 +97,7 @@ final protected function componentsBase()
 ```
 
 ## Шаблон сайта при начальных условиях
-В папке *boilerplate/templates* размещен шаблон с наиболее частыми начальными условиями при создании шаблона сайта. 
+В папке [boilerplate/templates](https://github.com/notagency/notagency.base/tree/master/boilerplate/templates/sitename) размещен шаблон с наиболее частыми начальными условиями при создании шаблона сайта. 
 
 Например, в header есть код подключения меню с шаблоном top, а в footer есть подключение включаемых областей для вывода копирайта.
 

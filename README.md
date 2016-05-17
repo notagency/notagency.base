@@ -38,7 +38,7 @@ composer require notagency/notagency.base
 Основная библиотека для всех компонентов реализованная на основе *CBitrixComponent*. 
 Библиотека поддерживает исключения. 
 
-В методе [executeBase](https://github.com/notagency/notagency.base/blob/master/lib/componentsbase.php#L47-L70) устанавливается порядок выполнения методов компонента на основе *componentsBase*:
+В методе [executeBase](https://github.com/notagency/notagency.base/blob/master/lib/componentsbase.php#L47-L70) устанавливается порядок выполнения методов компонента, отнаследованного от *componentsBase*:
 
 ```php4
 

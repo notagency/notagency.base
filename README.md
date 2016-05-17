@@ -41,7 +41,6 @@ composer require notagency/notagency.base
 В методе [executeBase](https://github.com/notagency/notagency.base/blob/master/lib/componentsbase.php#L47-L70) устанавливается порядок выполнения методов компонента на основе *componentsBase*:
 
 ```php4
-<?php
 
 final protected function componentsBase()
 {

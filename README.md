@@ -23,7 +23,7 @@
 ## Установка
 
 Модуль распространяется через [composer](https://getcomposer.org/doc/00-intro.md).
-В корне сайта, где установлен битрикс, необходимо выполнить следующие команды:
+В корне сайта, где установлен битрикс, необходимо выполнить:
 
 ```bash
 composer require notagency/notagency.base
@@ -37,7 +37,7 @@ composer require notagency/notagency.base
 Основная библиотека для всех компонентов реализованная на основе *CBitrixComponent*. 
 Библиотека поддерживает исключения. 
 
-В методе [executeBase](https://bitbucket.org/notagency/notagency.base/src/cb212c88ee5361566ab3af6f3c6e0fe75997bfa1/lib/componentsbase.php?at=master&fileviewer=file-view-default#componentsbase.php-47) устанавливается порядок выполнения методов компонента на основе *componentsBase*:
+В методе [executeBase](https://github.com/notagency/notagency.base/blob/master/lib/componentsbase.php#L47-L70) устанавливается порядок выполнения методов компонента на основе *componentsBase*:
 
 ```php4
 <?php

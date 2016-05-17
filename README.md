@@ -62,16 +62,13 @@ final protected function componentsBase()
 	$this->executeProlog();
 
 	//начинаем кеширование
-	if ($this->startCache())
-	{
-
+	if ($this->startCache()) {
 		//метод для переопределения
 		//основной метод в котором выполняется вся логика компонента
 		$this->executeMain();
 
 		//если нужно кеширование шаблона...
-		if ($this->cacheTemplate)
-		{
+		if ($this->cacheTemplate) {
 			//подключает шаблон компонента
 			//публичный метод
 			$this->showResult();
@@ -83,8 +80,7 @@ final protected function componentsBase()
 	}
 
 	//если не нужно кеширование шаблона
-	if (!$this->cacheTemplate)
-	{
+	if (!$this->cacheTemplate) {
 		$this->showResult();
 	}
 

@@ -35,10 +35,11 @@ composer require notagency/notagency.base
 
 ## ComponentsBase
 
-Класс для всех компонентов реализованный на основе класса *CBitrixComponent*. 
-Библиотека поддерживает исключения. 
+Базовй класс для всех компонентов, реализованных на основе данного модуля. 
+Класс реализован на основе стандартного класса *CBitrixComponent*. 
+Поддерживает исключения. 
 
-В методе [executeBase](https://github.com/notagency/notagency.base/blob/master/lib/componentsbase.php#L47-L70) устанавливается порядок выполнения методов компонента, отнаследованного от класса *ComponentsBase*:
+В методе [executeBase](https://github.com/notagency/notagency.base/blob/master/lib/componentsbase.php#L47-L70) устанавливается порядок выполнения методов любого компонента, отнаследованного от *ComponentsBase*:
 
 ```php4
 

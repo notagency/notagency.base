@@ -23,6 +23,7 @@
 ## Установка
 
 Модуль распространяется через [composer](https://getcomposer.org/doc/00-intro.md) и опубликован на [packagist.org](https://packagist.org/packages/notagency/notagency.base).
+
 В корне сайта, где установлен битрикс, необходимо выполнить:
 
 ```bash

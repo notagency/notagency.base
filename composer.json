@@ -8,13 +8,13 @@
   "support": {
     "email": "ds@notagency.ru",
     "skype": "c01dshine",
-    "issues": "https://bitbucket.org/notagency/notagency.base/issues",
-    "source": "https://bitbucket.org/notagency/notagency.base/"
+    "issues": "https://github.com/notagency/notagency.base/issues",
+    "source": "https://github.com/notagency/notagency.base"
   },
   "authors": [
     {
       "name": "Dmitry Savchenkov",
-      "homepage": "http://coldshine.ru/",
+      "homepage": "http://notagency.ru/",
       "email": "ds@notagency.ru"
     }
   ],

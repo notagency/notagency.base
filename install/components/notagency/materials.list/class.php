@@ -1,4 +1,12 @@
-<?
+<?php
+
+/**
+ * Типовой список
+ * @link https://bitbucket.org/notagency/notagency.base
+ * @author Dmitry Savchenkov <ds@notagency.ru>
+ * @copyright Copyright © 2016 NotAgency
+ */
+
 namespace Notagency\Components;
 
 use Notagency\Base\ComponentsBase,
@@ -16,6 +24,9 @@ class MaterialsList extends ComponentsBase
 
     protected $elementsFilter = [];
 
+    /**
+     * @inheritdoc
+     */
     public function onPrepareComponentParams($arParams)
     {
         $arParams = parent::onPrepareComponentParams($arParams);

@@ -1,6 +1,8 @@
 <?
 namespace Notagency\Base\Traits;
 
+use Bitrix\Main\Config\Option;
+
 trait JsonFormatter
 {
     protected function applyJsonHeaders()
@@ -13,7 +15,12 @@ trait JsonFormatter
     public function showResult()
     {
         $this->applyJsonHeaders();
-        echo json_encode($this->arResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $minifyJson = Option::get('main', 'use_minified_assets', 'N');
+        if ($minifyJson == 'Y') {
+            echo json_encode($this->arResult, JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode($this->arResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
     }
     
     protected function catchException(\Exception $exception)

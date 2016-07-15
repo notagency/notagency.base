@@ -1,7 +1,9 @@
-<?
+<?php
 
 /**
+ * Набор полезных функций
  * @link https://bitbucket.org/notagency/notagency.base
+ * @author Dmitry Savchenkov <ds@notagency.ru>
  * @copyright Copyright © 2016 NotAgency
  */
 
@@ -17,20 +19,17 @@ class Tools
     public static function formatFileSize($size)
     {
         $displaySize = [];
-        if(intval($size)> 1048576)
-        {
-            $displaySize["SIZE"]= round($size / 1048576,2);
-            $displaySize["UNIT"]= "Mb";
+        if (intval($size) > 1048576) {
+            $displaySize['SIZE'] = round($size / 1048576,2);
+            $displaySize['UNIT'] = 'Mb';
         }
-        elseif(intval($size)> 1024)
-        {
-            $displaySize["SIZE"]= round($size / 1024,1);
-            $displaySize["UNIT"]= "Kb";
+        elseif (intval($size) > 1024) {
+            $displaySize['SIZE'] = round($size / 1024,1);
+            $displaySize['UNIT'] = 'Kb';
         }
-        else
-        {
-            $displaySize["SIZE"]= $size;
-            $displaySize["UNIT"]= "b";
+        else {
+            $displaySize['SIZE'] = $size;
+            $displaySize['UNIT'] = 'b';
         }
         return $displaySize;
     }
@@ -46,8 +45,9 @@ class Tools
      */
     function declOfNum($number, $titles)
     {
-        $cases = array (2, 0, 1, 1, 1, 2);
-        return $titles[ ($number%100>4 && $number%100<20)? 2 : $cases[min($number%10, 5)] ];
+        $cases = [2, 0, 1, 1, 1, 2];
+        return $titles[ ($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)] ];
     }
 
 }
+?>

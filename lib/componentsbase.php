@@ -1,7 +1,9 @@
-<?
+<?php
 
 /**
+ * Базовый класс компонентов
  * @link https://bitbucket.org/notagency/notagency.base
+ * @author Dmitry Savchenkov <ds@notagency.ru>
  * @copyright Copyright © 2016 NotAgency
  */
 
@@ -15,22 +17,22 @@ Loc::loadMessages(__FILE__);
 abstract class ComponentsBase extends \CBitrixComponent
 {
     /**
-     * @var array The codes of modules that will be included before executing component
+     * @var array symbolic codes of modules which are required by component
      */
-    protected $needModules = array();
+    protected $needModules = [];
 
     /**
-     * @var array Additional cache ID
+     * @var array additional cache IDs
      */
-    private $cacheAdditionalId;
+    private $cacheAdditionalId = [];
 
     /**
-     * @var string Cache dir
+     * @var string cache dir
      */
     protected $cacheDir = false;
 
     /**
-     * @var bool Caching template of the component (default not cache)
+     * @var bool Should we cache component's template? Default: true
      */
     protected $cacheTemplate = true;
 
@@ -80,7 +82,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Include modules
+     * Includes required modules
      * @uses $this->needModules
      * @throws \Bitrix\Main\LoaderException
      */
@@ -98,7 +100,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Cache init
+     * Start cache
      * @return bool
      */
     public function startCache()
@@ -129,8 +131,7 @@ abstract class ComponentsBase extends \CBitrixComponent
      */
     private function checkParams()
     {
-        if ($this->checkParams)
-        {
+        if ($this->checkParams) {
             foreach ($this->checkParams as $key => $params) {
                 $exception = false;
 
@@ -176,7 +177,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Restart buffer if AJAX request
+     * Restarts buffer if the ajax-request
      */
     private function startAjax()
     {
@@ -212,7 +213,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Write cache to disk
+     * Writes cache
      */
     public function writeCache()
     {
@@ -220,7 +221,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Resets the cache
+     * Resets cache
      */
     public function abortCache()
     {
@@ -228,25 +229,30 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Execute before getting results. Not cached
+     * Executed before main code. To be extended by child class.
+     * Result WILL NOT be cached.
+     *
+     * For example, one can put here some code to handle GET or POST requests and turn off component's cache.
+     * Exceptions could be thrown here.
      */
     protected function executeProlog() {}
     
     /**
-     * A method for extending the results of the child classes.
-     * The result this method will be cached
+     * Executes main component's code. To be extended by child class. 
+     * Result WILL be cached
      */
-    protected function executeMain()
-    {
-    }
+    protected function executeMain() {}
 
     /**
-     * Execute after getting results. Not cached
+     * Executed after main code. To be extended by child class.
+     * Result WILL NOT be cached.
+     *
+     * Here bitrix deffered functions like $APPLICATION->SetTitle() and etc could be called.
      */
     protected function executeEpilog() {}
 
     /**
-     * Stop execute script if AJAX request
+     * Stop to execute script if it is the ajax-request
      */
     private function stopAjax()
     {
@@ -256,7 +262,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Show results. Default: include template of the component
+     * Shows result. Default: includes component's template
      * @uses $this->templatePage
      */
     public function showResult()
@@ -265,10 +271,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Set status 404 and throw exception
-     * @param bool $notifier Sent notify to admin email
-     * @param \Exception|null|false $exception Exception which will be throwing or "false" what not throwing exceptions. Default — throw new \Exception()
-     * @throws \Exception
+     * Sets 404 http-status
      */
     public function return404()
     {
@@ -277,24 +280,23 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Called when an error occurs
-     *
-     * Resets the cache, show error message (two mode: for users and for admins),
-     * sending notification to admin email
+     * Called when an error occurs.
+     * Resets cache, show error message (two modes: for users and for admins).
      *
      * @param \Exception $exception
      */
     protected function catchException(\Exception $exception)
     {
         $this->abortCache();
-        if ($GLOBALS['USER']->IsAdmin())
+        if ($GLOBALS['USER']->IsAdmin()) {
             $this->showExceptionAdmin($exception);
-        else
+        } else {
             $this->showExceptionUser($exception);
+        }
     }
 
     /**
-     * Display of the error for user
+     * Shows error for user
      *
      * @param \Exception $exception
      */
@@ -304,7 +306,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Display of the error for admin
+     * Shows error for admin
      *
      * @param \Exception $exception
      */
@@ -315,7 +317,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Is AJAX request
+     * Checks whether it is the ajax-request
      *
      * @return bool
      */
@@ -335,7 +337,7 @@ abstract class ComponentsBase extends \CBitrixComponent
     }
 
     /**
-     * Register tag in cache
+     * Register cache tag
      *
      * @param string $tag Tag
      */
@@ -360,8 +362,11 @@ abstract class ComponentsBase extends \CBitrixComponent
     {
         if (empty($date)) {
             return '';
+        } else {
+            return \CIBlockFormatProperties::DateFormat($format, MakeTimeStamp($date, \CSite::GetDateFormat()));
         }
-        return \CIBlockFormatProperties::DateFormat($format, MakeTimeStamp($date, \CSite::GetDateFormat()));
     }
 
 }
+
+?>

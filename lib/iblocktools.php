@@ -1,7 +1,9 @@
-<?
+<?php
 
 /**
+ * Набор функций для работы с инфоблоками
  * @link https://bitbucket.org/notagency/notagency.base
+ * @author Dmitry Savchenkov <ds@notagency.ru>
  * @copyright Copyright © 2016 NotAgency
  */
 
@@ -22,12 +24,10 @@ class IblockTools
      */
      public static function getIblockId($code)
      {
-        if (!empty(self::$iblockId[$code]))
-        {
+        if (!empty(self::$iblockId[$code])) {
             return self::$iblockId[$code];
         }
-        if ($iblock = \CIBlock::GetList([], ['CODE' => $code])->fetch())
-        {
+        if ($iblock = \CIBlock::GetList([], ['CODE' => $code])->fetch()) {
             self::$iblockId[$code] = $iblock['ID'];
             return $iblock['ID'];
         }
@@ -44,21 +44,19 @@ class IblockTools
      */
     public static function getIblockPropertyEnumId($iblockCode, $propertyCode, $enumCode)
     {
-        if (!empty(self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode]))
-        {
+        if (!empty(self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode])) {
             return self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode];
         }
         
-        if (!$iblockId = self::getIblockId($iblockCode))
-        {
+        if (!$iblockId = self::getIblockId($iblockCode)) {
             return false;
         }
         
-        if ($enum = \CIBlockProperty::GetPropertyEnum($propertyCode, [], ['IBLOCK_ID' => $iblockId, 'EXTERNAL_ID' => $enumCode])->fetch())
-        {
+        if ($enum = \CIBlockProperty::GetPropertyEnum($propertyCode, [], ['IBLOCK_ID' => $iblockId, 'EXTERNAL_ID' => $enumCode])->fetch()) {
             self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode] = $enum['ID'];
             return $enum['ID'];
         }
         return false;
     }
 }
+?>

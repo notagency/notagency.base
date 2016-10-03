@@ -15,10 +15,10 @@ foreach ($arResult['SECTIONS'] as $section) {
     if ($arResult['TREE'][$section['ID']]['ELEMENTS']) {
         ?><ul><?php
         foreach ($arResult['TREE'][$section['ID']]['ELEMENTS'] as $element) {
-            ?><li><?= $element['NAME'] ?></li><?php
+            ?><li><?=$element['NAME'] ?></li><?php
         }
         ?></ul><?php
     }
     ?></li><?php
 }
-?></ul><?php
+?></ul>

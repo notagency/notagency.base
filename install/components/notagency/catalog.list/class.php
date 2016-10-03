@@ -1,4 +1,4 @@
-<?
+<?php
 namespace Notagency\Components;
 
 \CBitrixComponent::includeComponentClass('notagency:materials.list');

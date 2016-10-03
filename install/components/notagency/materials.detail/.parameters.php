@@ -1,35 +1,31 @@
-<?
-if(!defined('B_PROLOG_INCLUDED')||B_PROLOG_INCLUDED!==true)die();
+<?php
+if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
-if(!CModule::IncludeModule('iblock'))
+if (!CModule::IncludeModule('iblock'))
     return;
 
-if (!empty($arCurrentValues['IBLOCK_CODE']))
-{
+if (!empty($arCurrentValues['IBLOCK_CODE'])) {
     //select iblock's element's fields and properties
     $filter = [
         'CODE' => $arCurrentValues['IBLOCK_CODE']
     ];
-    if ($iblock = CIBlock::GetList([], $filter)->fetch())
-    {
+    if ($iblock = CIBlock::GetList([], $filter)->fetch()) {
         //select fields
         $fields = [];
         $rawFields = CIBlock::GetFields($currentIblockId);
-        foreach ($rawFields as $fieldCode=>$field)
-        {
+        foreach ($rawFields as $fieldCode => $field) {
             $fields[$fieldCode] = $field['NAME'];
         }
 
         //element properties
         $elementProperties = [];
         $filter = [
-            'ACTIVE'=>'Y',
-            'IBLOCK_ID'=> $currentIblockId,
+            'ACTIVE' => 'Y',
+            'IBLOCK_ID' => $currentIblockId,
         ];
         $rsProp = CIBlockProperty::GetList([], $filter);
-        while ($item = $rsProp->Fetch())
-        {
-            $elementProperties[$item['CODE']] = '['.$item['CODE'].'] '.$item['NAME'];
+        while ($item = $rsProp->Fetch()) {
+            $elementProperties[$item['CODE']] = '[' . $item['CODE'] . '] ' . $item['NAME'];
         }
     }
 }
@@ -49,17 +45,14 @@ $arComponentParameters['PARAMETERS']['SELECT_ELEMENT_BY'] = array(
     'REFRESH' => 'Y',
 );
 
-if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'ID')
-{
+if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'ID') {
     $arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_ID'] = array(
         'PARENT' => 'BASE',
         'NAME' => 'GET или POST переменная, в которой передается id элемента',
         'TYPE' => 'STRING',
         'DEFAULT' => 'element_id',
     );
-}
-else if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'CODE')
-{
+} else if ($arCurrentValues['SELECT_ELEMENT_BY'] == 'CODE') {
     $arComponentParameters['PARAMETERS']['REQUEST_ELEMENT_CODE'] = array(
         'PARENT' => 'BASE',
         'NAME' => 'GET или POST переменная, в которой передается код элемента',
@@ -87,8 +80,7 @@ $arComponentParameters['PARAMETERS']['INCLUDE_INTO_CHAIN'] = array(
     'REFRESH' => 'Y',
 );
 
-if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD')
-{
+if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD') {
     $arComponentParameters['PARAMETERS']['INCLUDE_FIELD_INTO_CHAIN'] = array(
         'PARENT' => 'ADDITIONAL_SETTINGS',
         'NAME' => 'Добавить поля в навигационную цепочку (разделить точкой, если несколько)',
@@ -99,9 +91,7 @@ if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD')
         ],
         'ADDITIONAL_VALUES' => 'Y',
     );
-}
-else if($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'PROPERTY')
-{
+} else if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'PROPERTY') {
     $arComponentParameters['PARAMETERS']['INCLUDE_PROPERTY_INTO_CHAIN'] = array(
         'PARENT' => 'ADDITIONAL_SETTINGS',
         'NAME' => 'Добавить свойства в навигационную цепочку (разделить точкой, если несколько)',

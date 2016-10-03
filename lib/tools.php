@@ -20,14 +20,12 @@ class Tools
     {
         $displaySize = [];
         if (intval($size) > 1048576) {
-            $displaySize['SIZE'] = round($size / 1048576,2);
+            $displaySize['SIZE'] = round($size / 1048576, 2);
             $displaySize['UNIT'] = 'Mb';
-        }
-        elseif (intval($size) > 1024) {
-            $displaySize['SIZE'] = round($size / 1024,1);
+        } elseif (intval($size) > 1024) {
+            $displaySize['SIZE'] = round($size / 1024, 1);
             $displaySize['UNIT'] = 'Kb';
-        }
-        else {
+        } else {
             $displaySize['SIZE'] = $size;
             $displaySize['UNIT'] = 'b';
         }
@@ -46,8 +44,9 @@ class Tools
     function declOfNum($number, $titles)
     {
         $cases = [2, 0, 1, 1, 1, 2];
-        return $titles[ ($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)] ];
+        return $titles[($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)]];
     }
 
 }
+
 ?>

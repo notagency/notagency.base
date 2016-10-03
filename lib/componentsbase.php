@@ -66,7 +66,7 @@ abstract class ComponentsBase extends \CBitrixComponent
         if (!$this->cacheTemplate) {
             $this->showResult();
         }
-        
+
         $this->executeEpilog();
         $this->stopAjax();
     }
@@ -235,13 +235,17 @@ abstract class ComponentsBase extends \CBitrixComponent
      * For example, one can put here some code to handle GET or POST requests and turn off component's cache.
      * Exceptions could be thrown here.
      */
-    protected function executeProlog() {}
-    
+    protected function executeProlog()
+    {
+    }
+
     /**
-     * Executes main component's code. To be extended by child class. 
+     * Executes main component's code. To be extended by child class.
      * Result WILL be cached
      */
-    protected function executeMain() {}
+    protected function executeMain()
+    {
+    }
 
     /**
      * Executed after main code. To be extended by child class.
@@ -249,7 +253,9 @@ abstract class ComponentsBase extends \CBitrixComponent
      *
      * Here bitrix deffered functions like $APPLICATION->SetTitle() and etc could be called.
      */
-    protected function executeEpilog() {}
+    protected function executeEpilog()
+    {
+    }
 
     /**
      * Stop to execute script if it is the ajax-request

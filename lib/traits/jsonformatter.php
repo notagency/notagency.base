@@ -1,4 +1,4 @@
-<?
+<?php
 namespace Notagency\Base\Traits;
 
 use Bitrix\Main\Config\Option;
@@ -22,7 +22,7 @@ trait JsonFormatter
             echo json_encode($this->arResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
     }
-    
+
     protected function catchException(\Exception $exception)
     {
         $this->arResult = [
@@ -32,3 +32,5 @@ trait JsonFormatter
         $this->showResult();
     }
 }
+
+?>

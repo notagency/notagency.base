@@ -15,15 +15,15 @@ class IblockTools
 {
     private static $iblockId = [];
     private static $iblockPropertyEnumId = [];
-    
+
     /**
      * Получить ID инфоблока по коду
      *
-     * @param string $iblockCode
+     * @param string $code
      * @return int|bool
      */
-     public static function getIblockId($code)
-     {
+    public static function getIblockId($code)
+    {
         if (!empty(self::$iblockId[$code])) {
             return self::$iblockId[$code];
         }
@@ -32,8 +32,8 @@ class IblockTools
             return $iblock['ID'];
         }
         return false;
-     }
-    
+    }
+
     /**
      * Получить ID значения свойства типа "список" у инфоблока
      *
@@ -47,11 +47,11 @@ class IblockTools
         if (!empty(self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode])) {
             return self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode];
         }
-        
+
         if (!$iblockId = self::getIblockId($iblockCode)) {
             return false;
         }
-        
+
         if ($enum = \CIBlockProperty::GetPropertyEnum($propertyCode, [], ['IBLOCK_ID' => $iblockId, 'EXTERNAL_ID' => $enumCode])->fetch()) {
             self::$iblockPropertyEnumId[$iblockCode][$propertyCode][$enumCode] = $enum['ID'];
             return $enum['ID'];
@@ -59,4 +59,5 @@ class IblockTools
         return false;
     }
 }
+
 ?>

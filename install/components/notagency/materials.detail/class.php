@@ -1,4 +1,5 @@
-<?
+<?php
+
 namespace Notagency\Components;
 
 \CBitrixComponent::includeComponentClass('notagency:materials.list');
@@ -15,12 +16,10 @@ class MaterialsDetail extends MaterialsList
         $arParams['SELECT_SECTIONS'] = 'N';
         $arParams['ELEMENTS_COUNT'] = 1;
         $arParams['PAGING'] = 'N';
-        if (array_key_exists($arParams['REQUEST_ELEMENT_CODE'], $_REQUEST) && !empty($_REQUEST[$arParams['REQUEST_ELEMENT_CODE']]))
-        {
+        if (array_key_exists($arParams['REQUEST_ELEMENT_CODE'], $_REQUEST) && !empty($_REQUEST[$arParams['REQUEST_ELEMENT_CODE']])) {
             $arParams['ELEMENT_CODE'] = htmlspecialchars(trim($_REQUEST[$arParams['REQUEST_ELEMENT_CODE']]));
         }
-        if (array_key_exists($arParams['REQUEST_ELEMENT_ID'], $_REQUEST) && intval($_REQUEST[$arParams['REQUEST_ELEMENT_ID']]))
-        {            
+        if (array_key_exists($arParams['REQUEST_ELEMENT_ID'], $_REQUEST) && intval($_REQUEST[$arParams['REQUEST_ELEMENT_ID']])) {
             $arParams['ELEMENT_ID'] = intval($_REQUEST[$arParams['REQUEST_ELEMENT_ID']]);
         }
         return $arParams;
@@ -29,38 +28,31 @@ class MaterialsDetail extends MaterialsList
     protected function executeMain()
     {
         $filterInitialized = false;
-        if ($this->arParams['ELEMENT_ID'])
-        {
+        if ($this->arParams['ELEMENT_ID']) {
             $this->elementsFilter['ID'] = $this->arParams['ELEMENT_ID'];
             $filterInitialized = true;
         }
-        if ($this->arParams['ELEMENT_CODE'])
-        {
+        if ($this->arParams['ELEMENT_CODE']) {
             $this->elementsFilter['CODE'] = $this->arParams['ELEMENT_CODE'];
             $filterInitialized = true;
         }
-        if ($filterInitialized)
-        {
+        if ($filterInitialized) {
             parent::executeMain();
             $this->arResult['ELEMENT'] = $this->arResult['ELEMENTS'][0];
         }
         unset($this->arResult['ELEMENTS']);
-        if (intval($this->arResult['ELEMENT']['IBLOCK_SECTION_ID']))
-        {
+        if (intval($this->arResult['ELEMENT']['IBLOCK_SECTION_ID'])) {
             $this->arParams['SELECT_SECTIONS_TREE'] = 'Y';
             $this->arParams['SECTION_ID'] = $this->arResult['ELEMENT']['IBLOCK_SECTION_ID'];
             $this->selectSections();
         }
     }
-    
+
     public function showResult()
     {
-        if ($is404 = empty($this->arResult['ELEMENT']))
-        {
+        if ($is404 = empty($this->arResult['ELEMENT'])) {
             $this->handle404();
-        }
-        else
-        {
+        } else {
             $this->includeComponentTemplate($this->templatePage);
         }
     }
@@ -69,54 +61,43 @@ class MaterialsDetail extends MaterialsList
     {
         $this->handleNavChain();
     }
-    
+
     protected function handleNavChain()
     {
         global $APPLICATION;
-        
-        if ($includeSectionNameIntoChain = $this->arParams['INCLUDE_SECTIONS_NAMES_INTO_CHAIN'] == 'Y')
-        {
+
+        if ($includeSectionNameIntoChain = $this->arParams['INCLUDE_SECTIONS_NAMES_INTO_CHAIN'] == 'Y') {
             //считаем, что разделы уже отсортированы по margin_left в maetrials.list
-            foreach ($this->arResult['SECTIONS'] as $section)
-            {
+            foreach ($this->arResult['SECTIONS'] as $section) {
                 $APPLICATION->AddChainItem(trim($section['NAME']), $section['SECTION_PAGE_URL']);
             }
         }
-        
+
         $includeIntoChain = $this->arParams['INCLUDE_INTO_CHAIN'];
-        
+
         $chainFieldNames = explode('.', $this->arParams['INCLUDE_FIELD_INTO_CHAIN']);
         $chainPropertyNames = explode('.', $this->arParams['INCLUDE_PROPERTY_INTO_CHAIN']);
 
         $chainEntity = '';
-        switch ($includeIntoChain)
-        {
+        switch ($includeIntoChain) {
             case 'FIELD':
-                foreach ($chainFieldNames as $chainFieldName)
-                {
-                    if (!array_key_exists($chainFieldName, $this->arResult['ELEMENT']))
-                    {
+                foreach ($chainFieldNames as $chainFieldName) {
+                    if (!array_key_exists($chainFieldName, $this->arResult['ELEMENT'])) {
                         continue;
                     }
-                    if ($chainFieldName == 'DATE_ACTIVE_FROM' && $this->arResult['ELEMENT']['DISPLAY_ACTIVE_FROM'])
-                    {
+                    if ($chainFieldName == 'DATE_ACTIVE_FROM' && $this->arResult['ELEMENT']['DISPLAY_ACTIVE_FROM']) {
                         $chainEntity .= ' ' . $this->arResult['ELEMENT']['DISPLAY_ACTIVE_FROM'];
-                    }
-                    else
-                    {
+                    } else {
                         $chainEntity .= ' ' . $this->arResult['ELEMENT'][$chainFieldName];
                     }
                 }
                 break;
             case 'PROPERTY':
-                foreach ($chainPropertyNames as $chainPropertyName)
-                {
-                    if (!array_key_exists($chainPropertyName, $this->arResult['ELEMENT']['PROPERTIES']))
-                    {
+                foreach ($chainPropertyNames as $chainPropertyName) {
+                    if (!array_key_exists($chainPropertyName, $this->arResult['ELEMENT']['PROPERTIES'])) {
                         continue;
                     }
-                    if (empty($this->arResult['ELEMENT']['PROPERTIES'][$chainPropertyName]['VALUE']))
-                    {
+                    if (empty($this->arResult['ELEMENT']['PROPERTIES'][$chainPropertyName]['VALUE'])) {
                         continue;
                     }
 
@@ -125,8 +106,7 @@ class MaterialsDetail extends MaterialsList
                 }
                 break;
         }
-        if (!empty($chainEntity))
-        {
+        if (!empty($chainEntity)) {
             $APPLICATION->AddChainItem(trim($chainEntity));
         }
     }

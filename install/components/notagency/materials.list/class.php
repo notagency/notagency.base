@@ -338,6 +338,7 @@ class MaterialsList extends ComponentsBase
                 continue;
             $rs = \CIBlockElement::GetProperty($this->arResult['IBLOCK']['ID'], $elementId, array(), array('CODE' => $propertyCode));
             while ($prop = $rs->Fetch()) {
+                $props[$prop['CODE']]['NAME'] = $prop['NAME'];
                 $props[$prop['CODE']]['PROPERTY_TYPE'] = $prop['PROPERTY_TYPE'];
                 $props[$prop['CODE']]['MULTIPLE'] = $prop['MULTIPLE'];
                 if (!empty($prop['VALUE'])) {

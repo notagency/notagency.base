@@ -60,6 +60,7 @@ class MaterialsDetail extends MaterialsList
     protected function executeEpilog()
     {
         $this->handleNavChain();
+        $this->handleTitle();
     }
 
     protected function handleNavChain()
@@ -67,7 +68,7 @@ class MaterialsDetail extends MaterialsList
         global $APPLICATION;
 
         if ($includeSectionNameIntoChain = $this->arParams['INCLUDE_SECTIONS_NAMES_INTO_CHAIN'] == 'Y') {
-            //считаем, что разделы уже отсортированы по margin_left в maetrials.list
+            //считаем, что разделы уже отсортированы по margin_left в materials.list
             foreach ($this->arResult['SECTIONS'] as $section) {
                 $APPLICATION->AddChainItem(trim($section['NAME']), $section['SECTION_PAGE_URL']);
             }
@@ -108,6 +109,27 @@ class MaterialsDetail extends MaterialsList
         }
         if (!empty($chainEntity)) {
             $APPLICATION->AddChainItem(trim($chainEntity));
+        }
+    }
+    
+    protected function handleTitle()
+    {
+        global $APPLICATION;
+        $setTitleFrom = $this->arParams['SET_TITLE_FROM'];
+        $setTitleFromProperty = $this->arParams['SET_TITLE_FROM_PROPERTY'];
+
+        switch ($setTitleFrom) {
+            case 'NAME':
+                $APPLICATION->SetTitle($this->arResult['ELEMENT']['NAME']);
+                break;
+            case 'PROPERTY':
+                if (
+                    array_key_exists($setTitleFromProperty, $this->arResult['ELEMENT']['PROPERTIES'])
+                    && !empty($this->arResult['ELEMENT']['PROPERTIES'][$setTitleFromProperty]['VALUE'])
+                ) {
+                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['PROPERTIES'][$setTitleFromProperty]['VALUE']);
+                }
+                break;
         }
     }
 }

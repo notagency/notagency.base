@@ -12,7 +12,7 @@ if (!empty($arCurrentValues['IBLOCK_CODE'])) {
     if ($iblock = CIBlock::GetList([], $filter)->fetch()) {
         //select fields
         $fields = [];
-        $rawFields = CIBlock::GetFields($currentIblockId);
+        $rawFields = CIBlock::GetFields($iblock['ID']);
         foreach ($rawFields as $fieldCode => $field) {
             $fields[$fieldCode] = $field['NAME'];
         }
@@ -21,7 +21,7 @@ if (!empty($arCurrentValues['IBLOCK_CODE'])) {
         $elementProperties = [];
         $filter = [
             'ACTIVE' => 'Y',
-            'IBLOCK_ID' => $currentIblockId,
+            'IBLOCK_ID' => $iblock['ID'],
         ];
         $rsProp = CIBlockProperty::GetList([], $filter);
         while ($item = $rsProp->Fetch()) {
@@ -29,7 +29,6 @@ if (!empty($arCurrentValues['IBLOCK_CODE'])) {
         }
     }
 }
-
 
 $arComponentParameters = CComponentUtil::GetComponentProps('notagency:materials.list', $arCurrentValues);
 
@@ -87,7 +86,6 @@ if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD') {
         'TYPE' => 'LIST',
         'VALUES' => [
             'NAME' => $fields['NAME'],
-            'DATE_ACTIVE_FROM' => $fields['ACTIVE_FROM'],
         ],
         'ADDITIONAL_VALUES' => 'Y',
     );
@@ -95,6 +93,27 @@ if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD') {
     $arComponentParameters['PARAMETERS']['INCLUDE_PROPERTY_INTO_CHAIN'] = array(
         'PARENT' => 'ADDITIONAL_SETTINGS',
         'NAME' => 'Добавить свойства в навигационную цепочку (разделить точкой, если несколько)',
+        'TYPE' => 'LIST',
+        'VALUES' => $elementProperties,
+        'ADDITIONAL_VALUES' => 'Y',
+    );
+}
+
+$arComponentParameters['PARAMETERS']['SET_TITLE_FROM'] = array(
+    'PARENT' => 'ADDITIONAL_SETTINGS',
+    'NAME' => 'Установить заголовок из названия или свойства',
+    'TYPE' => 'LIST',
+    'VALUES' => [
+        '' => 'Нет',
+        'NAME' => 'Из названия',
+        'PROPERTY' => 'Из значения свойства',
+    ],
+    'REFRESH' => 'Y',
+);
+if ($arCurrentValues['SET_TITLE_FROM'] == 'PROPERTY') {
+    $arComponentParameters['PARAMETERS']['SET_TITLE_FROM_PROPERTY'] = array(
+        'PARENT' => 'ADDITIONAL_SETTINGS',
+        'NAME' => 'Установить заголовок из значения свойства',
         'TYPE' => 'LIST',
         'VALUES' => $elementProperties,
         'ADDITIONAL_VALUES' => 'Y',

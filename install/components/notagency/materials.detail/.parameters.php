@@ -86,6 +86,7 @@ if ($arCurrentValues['INCLUDE_INTO_CHAIN'] == 'FIELD') {
         'TYPE' => 'LIST',
         'VALUES' => [
             'NAME' => $fields['NAME'],
+            'DATE_ACTIVE_FROM' => $fields['ACTIVE_FROM'],
         ],
         'ADDITIONAL_VALUES' => 'Y',
     );

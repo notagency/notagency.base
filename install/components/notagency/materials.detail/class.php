@@ -69,8 +69,10 @@ class MaterialsDetail extends MaterialsList
 
         if ($includeSectionNameIntoChain = $this->arParams['INCLUDE_SECTIONS_NAMES_INTO_CHAIN'] == 'Y') {
             //считаем, что разделы уже отсортированы по margin_left в materials.list
-            foreach ($this->arResult['SECTIONS'] as $section) {
-                $APPLICATION->AddChainItem(trim($section['NAME']), $section['SECTION_PAGE_URL']);
+            if (!empty($this->arResult['SECTIONS'])) {
+                foreach ($this->arResult['SECTIONS'] as $section) {
+                    $APPLICATION->AddChainItem(trim($section['NAME']), $section['SECTION_PAGE_URL']);
+                }
             }
         }
 

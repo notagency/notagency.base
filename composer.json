@@ -1,9 +1,9 @@
 {
   "name": "notagency/notagency.base",
-  "description": "Bitrix-D7-framework missing components",
-  "keywords": ["bitrix", "components", "module"],
+  "description": "Bitrix D7 components based on notagency.base-module",
+  "keywords": ["bitrix", "components"],
   "homepage": "http://notagency.ru",
-  "type": "bitrix-d7-module",
+  "type": "bitrix-component",
   "license": "MIT",
   "support": {
     "email": "ds@notagency.ru",
@@ -19,10 +19,16 @@
     }
   ],
   "extra": {
-    "installer-name": "base"
+    "installer-paths": {
+      "bitrix/components/{$vendor}": ["vendor/package"]
+    }
   },
   "require": {
-    "php":">=5.4.0",
-    "composer/installers": "~1"
-  }
+    "php": ">=5.4.0",
+    "composer/installers": "~1",
+    "notagency/notagency.base-module": "dev-master"
+  },
+  "repositories": [
+    { "type": "vcs", "url": "https://github.com/notagency/notagency.base-module" }
+  ]
 }

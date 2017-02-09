@@ -40,7 +40,7 @@ class notagency_base extends CModule
     public function InstallFiles()
     {
         //создаем симлинк для того чтобы обносления после composer update сразу же отображались на сайте
-        $this->_symlink(__DIR__ . '/components/notagency', $_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency');
+        $this->_symlink('../modules/notagency.base/install/components/notagency', $_SERVER["DOCUMENT_ROOT"] . '/bitrix/components/notagency');
         return true;
     }
 

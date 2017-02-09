@@ -19,7 +19,7 @@
     }
   ],
   "extra": {
-    "installer-name": "notagency.base"
+    "installer-name": "base"
   },
   "require": {
     "php":">=5.4.0",

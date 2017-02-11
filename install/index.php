@@ -86,3 +86,4 @@ class notagency_base extends CModule
         }
     }
 }
+?>

@@ -95,6 +95,7 @@ final protected function componentsBase()
 ```
 
 ## Шаблон сайта при начальных условиях
+
 В папке [boilerplate/templates](https://github.com/notagency/notagency.base/tree/master/boilerplate/templates/sitename) размещен шаблон с наиболее частыми начальными условиями при создании шаблона сайта. 
 
 Например, в header есть код подключения меню с шаблоном top, а в footer есть подключение включаемых областей для вывода копирайта.

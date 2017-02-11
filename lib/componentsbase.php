@@ -94,7 +94,7 @@ abstract class ComponentsBase extends \CBitrixComponent
 
         foreach ($this->needModules as $module) {
             if (!Main\Loader::includeModule($module)) {
-                throw new Main\LoaderException(Loc::getMessage('NIK_FAILED_INCLUDE_MODULE', ['#MODULE#' => $module]));
+                throw new Main\LoaderException(Loc::getMessage('NOTAGENCY_FAILED_INCLUDE_MODULE', ['#MODULE#' => $module]));
             }
         }
     }
@@ -308,7 +308,7 @@ abstract class ComponentsBase extends \CBitrixComponent
      */
     protected function showExceptionUser(\Exception $exception)
     {
-        ShowError(Loc::getMessage('NIK_COMPONENT_ERROR_OCCURED'));
+        ShowError(Loc::getMessage('NOTAGENCY_COMPONENT_ERROR_OCCURED'));
     }
 
     /**

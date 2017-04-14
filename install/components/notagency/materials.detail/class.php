@@ -27,16 +27,13 @@ class MaterialsDetail extends MaterialsList
 
     protected function executeMain()
     {
-        $filterInitialized = false;
         if ($this->arParams['ELEMENT_ID']) {
             $this->elementsFilter['ID'] = $this->arParams['ELEMENT_ID'];
-            $filterInitialized = true;
         }
         if ($this->arParams['ELEMENT_CODE']) {
             $this->elementsFilter['CODE'] = $this->arParams['ELEMENT_CODE'];
-            $filterInitialized = true;
         }
-        if ($filterInitialized) {
+        if (!empty($this->elementsFilter)) {
             parent::executeMain();
             $this->arResult['ELEMENT'] = $this->arResult['ELEMENTS'][0];
         }

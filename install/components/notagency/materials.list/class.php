@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Типовой список
- * @link https://bitbucket.org/notagency/notagency.base
- * @author Dmitry Savchenkov <ds@notagency.ru>
- * @copyright Copyright © 2016 NotAgency
- */
+* Типовой список
+* @link https://bitbucket.org/notagency/notagency.base
+* @author Dmitry Savchenkov <ds@notagency.ru>
+* @copyright Copyright © 2016 NotAgency
+*/
 
 namespace Notagency\Components;
 
 use Notagency\Base\ComponentsBase,
-    Notagency\Base\Tools;
+Notagency\Base\Tools;
 
 if (!\Bitrix\Main\Loader::includeModule('notagency.base')) return false;
 
@@ -25,8 +25,8 @@ class MaterialsList extends ComponentsBase
     protected $elementsFilter = [];
 
     /**
-     * @inheritdoc
-     */
+    * @inheritdoc
+    */
     public function onPrepareComponentParams($arParams)
     {
         $arParams = parent::onPrepareComponentParams($arParams);
@@ -71,12 +71,15 @@ class MaterialsList extends ComponentsBase
         if (!empty($arParams['ELEMENT_FIELDS'])) {
             $arParams['ELEMENT_FIELDS'] = array_filter($arParams['ELEMENT_FIELDS']);
         }
+
+        if(!empty($arParams['CACHE_TEMPLATE']) and $arParams['CACHE_TEMPLATE'] == 'N')
+            $this->cacheTemplate = false;
         return $arParams;
     }
 
     /**
-     * @inheritdoc
-     */
+    * @inheritdoc
+    */
     protected function executeMain()
     {
         $this->selectIblock();
@@ -87,8 +90,8 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * @inheritdoc
-     */
+    * @inheritdoc
+    */
     protected function executeEpilog()
     {
         //не кешируется
@@ -96,9 +99,9 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Выбирает поля инфоблока, результат в $arResult['IBLOCK']
-     * @throws \Exception
-     */
+    * Выбирает поля инфоблока, результат в $arResult['IBLOCK']
+    * @throws \Exception
+    */
     protected function selectIblock()
     {
         $filter = [
@@ -114,9 +117,9 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Возвращает массив полей для выборки у разделов
-     * @return array
-     */
+    * Возвращает массив полей для выборки у разделов
+    * @return array
+    */
     protected function getSectionsSelect()
     {
         $select = [
@@ -139,20 +142,20 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Выбирает разделы
-     * Список разделов в $arResult['SECTIONS']
-     * Выбранный раздел в $arResult['CURRENT_SECTION']
-     * @throws \Exception
-     */
+    * Выбирает разделы
+    * Список разделов в $arResult['SECTIONS']
+    * Выбранный раздел в $arResult['CURRENT_SECTION']
+    * @throws \Exception
+    */
     protected function selectSections()
     {
         $sections = [];
         $currentSection = null;
         $needParticularSection = false;
         if (
-            $this->arParams['SELECT_SECTIONS'] != 'Y'
-            && !$this->arParams['SECTION_CODE']
-            && !$this->arParams['SECTION_ID']
+        $this->arParams['SELECT_SECTIONS'] != 'Y'
+        && !$this->arParams['SECTION_CODE']
+        && !$this->arParams['SECTION_ID']
         ) {
             return;
         }
@@ -192,11 +195,11 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Вызывается в цикле для каждого раздела
-     * @param array $section - результат CIBlockSection::GetList()
-     * @return array $section
-     * @throws \Exception
-     */
+    * Вызывается в цикле для каждого раздела
+    * @param array $section - результат CIBlockSection::GetList()
+    * @return array $section
+    * @throws \Exception
+    */
     protected function processSection($section)
     {
         //наследуемые свойства
@@ -207,11 +210,11 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Выбирает всю ветку разделов по левой и правой границе какого-либо конкретного раздела
-     * @param int $leftMargin - nestedSets
-     * @param int $rightMargin - nestedSets
-     * @return array
-     */
+    * Выбирает всю ветку разделов по левой и правой границе какого-либо конкретного раздела
+    * @param int $leftMargin - nestedSets
+    * @param int $rightMargin - nestedSets
+    * @return array
+    */
     protected function getSectionsTree($leftMargin, $rightMargin)
     {
         if (!$leftMargin || !$rightMargin) {
@@ -236,10 +239,10 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Выбирает поля элемента, результат в $arResult['ELEMENTS']
-     * Постраничная навигация - $arResult['NAV_STRING']
-     * @throws \Exception
-     */
+    * Выбирает поля элемента, результат в $arResult['ELEMENTS']
+    * Постраничная навигация - $arResult['NAV_STRING']
+    * @throws \Exception
+    */
     protected function selectElements()
     {
         $elements = [];
@@ -272,6 +275,7 @@ class MaterialsList extends ComponentsBase
         }
         if (is_array($this->elementsFilter)) {
             $filter = array_merge($filter, $this->elementsFilter);
+            //echo "<pre>".print_r($filter,true)."</pre>\n"; 
         }
 
         //nav
@@ -320,16 +324,26 @@ class MaterialsList extends ComponentsBase
         $this->arResult['ELEMENTS'] = $elements;
         if ($this->arParams['PAGING'] == 'Y') {
             $this->arResult['NAV_RESULT'] = $res;
-            $this->arResult['NAV_STRING'] = $res->GetPageNavString($navigationTitle = '', $templateName = '.default', $showAlways = false, $parentComponent = $this);
+
+            $templateName = empty($this->arParams['PAGING_TEMPLATE_NAME']) ? '.default' : $this->arParams['PAGING_TEMPLATE_NAME'];
+            if(!empty($this->arParams['USE_AJAX']) and $this->arParams['USE_AJAX'] == 'Y')
+            {
+                $res->ajaxParams = [
+                    'AJAX_COMPONENT_ID' => $this->arParams['AJAX_COMPONENT_ID'],
+                    'AJAX_PARAM_NAME' => $this->arParams['AJAX_PARAM_NAME'],
+                ];    
+            }
+
+            $this->arResult['NAV_STRING'] = $res->GetPageNavString($navigationTitle = '', $templateName, $showAlways = false, $parentComponent = $this);
         }
     }
 
     /**
-     * Выбирает свойства элемента
-     * @param int $elementId - ID элемента инфоблока
-     * @throws \Exception
-     * @return array - результат CIBlockElement::GetProperty()
-     */
+    * Выбирает свойства элемента
+    * @param int $elementId - ID элемента инфоблока
+    * @throws \Exception
+    * @return array - результат CIBlockElement::GetProperty()
+    */
     protected function getElementProperties($elementId)
     {
         $props = [];
@@ -364,11 +378,11 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Вызывается в цикле для каждого элемента
-     * @param array $element - результат CIBlockElement::GetList()
-     * @return array $element
-     * @throws \Exception
-     */
+    * Вызывается в цикле для каждого элемента
+    * @param array $element - результат CIBlockElement::GetList()
+    * @return array $element
+    * @throws \Exception
+    */
     protected function processElement($element)
     {
         if (array_key_exists('DATE_ACTIVE_FROM', $element)) {
@@ -411,11 +425,11 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Обработка файла
-     * @param array $file - результат CFile::GetFileArray()
-     * @return array $file
-     * @throws \Exception
-     */
+    * Обработка файла
+    * @param array $file - результат CFile::GetFileArray()
+    * @return array $file
+    * @throws \Exception
+    */
     protected function processFile($file)
     {
         if (!is_array($file)) {
@@ -435,8 +449,8 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Строит дерево разделов и элементов, результат в $arResult['TREE']
-     */
+    * Строит дерево разделов и элементов, результат в $arResult['TREE']
+    */
     protected function buildTree()
     {
         if (!empty($this->arResult['SECTIONS'])) {
@@ -463,8 +477,8 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Устанавливает кнопки управления компонентом в публичной части в режиме редактирования
-     */
+    * Устанавливает кнопки управления компонентом в публичной части в режиме редактирования
+    */
     protected function setPanelButtons()
     {
         foreach ($this->arResult['ELEMENTS'] as $i => $element) {
@@ -482,8 +496,8 @@ class MaterialsList extends ComponentsBase
     }
 
     /**
-     * Отображает кнопки управления компонентом в публичной части в режиме редактирования
-     */
+    * Отображает кнопки управления компонентом в публичной части в режиме редактирования
+    */
     protected function showPanelButtons()
     {
         $buttons = \CIBlock::GetPanelButtons(
@@ -503,8 +517,8 @@ class MaterialsList extends ComponentsBase
     public function showResult()
     {
         if (
-            ($this->arParams['SECTION_CODE'] || $this->arParams['SECTION_ID'])
-            && empty($this->arResult['SECTIONS'])
+        ($this->arParams['SECTION_CODE'] || $this->arParams['SECTION_ID'])
+        && empty($this->arResult['SECTIONS'])
         ) {
             $this->handle404();
         } else {

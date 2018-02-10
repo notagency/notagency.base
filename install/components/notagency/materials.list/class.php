@@ -49,12 +49,13 @@ class MaterialsList extends ComponentsBase
         if (strlen($arParams['SECTION_SORT_BY2']) <= 0) $arParams['SECTION_SORT_BY2'] = 'ID';
         if ($arParams['SECTION_SORT_ORDER2'] != 'DESC') $arParams['SECTION_SORT_ORDER2'] = 'ASC';
 
-        if (intval($_GET['page']) && !intval($arParams['PAGE'])) $arParams['PAGE'] = intval($_GET['page']);
         if ($arParams['PAGING'] == 'Y') {
             \CPageOption::SetOptionString('main', 'nav_page_in_session', 'N'); //не сохраняем в сессии параметры пагинации потому что это сбивает с толку пользователей
-            $nav = \CDBResult::GetNavParams();
-            if ($nav) $arParams['PAGE'] = intval($nav['PAGEN']);
-            else if ($arParams['PAGE']) $arParams['PAGE'] = intval($_GET['page']);
+            $customPageNumber = intval($_GET['page']) ? intval($_GET['page']) : false;
+            $nav = \CDBResult::GetNavParams(0, true, $customPageNumber);
+            if ($nav && array_key_exists('PAGEN', $nav)) {
+                $arParams['PAGE'] = intval($nav['PAGEN']);
+            }
         }
 
         $arParams['PREPROD_SERVER'] = defined('PREPROD_SERVER') && PREPROD_SERVER;

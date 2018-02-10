@@ -49,7 +49,7 @@ class MaterialsList extends ComponentsBase
         if (strlen($arParams['SECTION_SORT_BY2']) <= 0) $arParams['SECTION_SORT_BY2'] = 'ID';
         if ($arParams['SECTION_SORT_ORDER2'] != 'DESC') $arParams['SECTION_SORT_ORDER2'] = 'ASC';
 
-        if ($arParams['PAGE']) $arParams['PAGE'] = intval($_GET['page']);
+        if (intval($_GET['page']) && !intval($arParams['PAGE'])) $arParams['PAGE'] = intval($_GET['page']);
         if ($arParams['PAGING'] == 'Y') {
             \CPageOption::SetOptionString('main', 'nav_page_in_session', 'N'); //не сохраняем в сессии параметры пагинации потому что это сбивает с толку пользователей
             $nav = \CDBResult::GetNavParams();

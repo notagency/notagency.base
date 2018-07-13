@@ -27,7 +27,7 @@ class CatalogDetail extends MaterialsDetail
             $arDefaultMeasure = \CIBlockPriceTools::GetDefaultMeasure();
             $element['CATALOG_MEASURE_NAME'] = $arDefaultMeasure['SYMBOL_RUS'];
         } else {
-            $rsMeasures = \CCatalogMeasure::getList(false, array('ID' => $product['MEASURE']));
+            $rsMeasures = \CCatalogMeasure::getList(array(), array('ID' => $product['MEASURE']));
             if ($arMeasure = $rsMeasures->GetNext()) {
                 $element['CATALOG_MEASURE_NAME'] = $arMeasure['SYMBOL_RUS'];
             }

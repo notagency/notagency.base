@@ -119,7 +119,10 @@ class MaterialsDetail extends MaterialsList
 
         switch ($setTitleFrom) {
             case 'NAME':
-                $APPLICATION->SetTitle($this->arResult['ELEMENT']['NAME']);
+                if(!empty($this->arResult['ELEMENT']['IPROPERTY_VALUES']['SECTION_META_TITLE']))
+                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['IPROPERTY_VALUES']['SECTION_META_TITLE']);
+                else
+                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['NAME']);
                 break;
             case 'PROPERTY':
                 if (

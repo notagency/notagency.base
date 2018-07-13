@@ -398,7 +398,7 @@ class MaterialsList extends ComponentsBase
         foreach ($element['PROPERTIES'] as &$property) {
             //обработка свойства типа "Файл"
             if ($property['PROPERTY_TYPE'] == 'F') {
-                if ($property['MULTIPLE'] == 'Y' && count($property['VALUE'])) {
+                if ($property['MULTIPLE'] == 'Y' && !empty($property['VALUE'])) {
                     foreach ($property['VALUE'] as $fileId) {
                         if (!intval($fileId)) {
                             continue;

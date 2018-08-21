@@ -23,6 +23,11 @@ class CatalogList extends MaterialsList
         $product = \CCatalogProduct::GetByID($element['ID']);
         $element['QUANTITY'] = $product['QUANTITY'];
 
+        $res = \CCatalogMeasureRatio::getList([], ['IBLOCK_ID' => $element['IBLOCK_ID'], 'PRODUCT_ID' => $product['ID']], false, false, []);
+        if($arRation = $res->Fetch()){
+             $element['CATALOG_RATION'] = $arRation['RATIO'];
+        }
+        
         if (empty($product['MEASURE'])) {
             $arDefaultMeasure = \CCatalogMeasure::getDefaultMeasure(true, true);
             $element['CATALOG_MEASURE_NAME'] = $arDefaultMeasure['SYMBOL_RUS'];

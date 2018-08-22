@@ -356,6 +356,11 @@ class MaterialsList extends ComponentsBase
                 $props[$prop['CODE']]['NAME'] = $prop['NAME'];
                 $props[$prop['CODE']]['PROPERTY_TYPE'] = $prop['PROPERTY_TYPE'];
                 $props[$prop['CODE']]['MULTIPLE'] = $prop['MULTIPLE'];
+                
+                if($prop['PROPERTY_TYPE'] == 'E'){
+                    $props[$prop['CODE']]['LINK_IBLOCK_ID'] = $prop['LINK_IBLOCK_ID'];
+                }                
+                
                 if (!empty($prop['VALUE'])) {
                     if ($prop['MULTIPLE'] == 'Y') {
                         $props[$prop['CODE']]['DESCRIPTION'][] = $prop['DESCRIPTION'];

@@ -117,12 +117,12 @@ class MaterialsDetail extends MaterialsList
         $setTitleFrom = $this->arParams['SET_TITLE_FROM'];
         $setTitleFromProperty = $this->arParams['SET_TITLE_FROM_PROPERTY'];
 
-        switch ($setTitleFrom) {
+        switch ($setTitleFrom){
             case 'NAME':
-                if(!empty($this->arResult['ELEMENT']['IPROPERTY_VALUES']['SECTION_META_TITLE']))
-                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['IPROPERTY_VALUES']['SECTION_META_TITLE']);
-                else
-                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['NAME']);
+                if(!empty($this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_META_TITLE'])){
+                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_META_TITLE']);
+                }else
+                    $APPLICATION->SetTitle($this->arResult['ELEMENT']['~NAME']);
                 break;
             case 'PROPERTY':
                 if (
@@ -133,5 +133,13 @@ class MaterialsDetail extends MaterialsList
                 }
                 break;
         }
+        
+        if(!empty($this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_META_DESCRIPTION']))    
+            $APPLICATION->SetPageProperty("description", $this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_META_DESCRIPTION']);
+
+        if(!empty($this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_META_KEYWORDS']))    
+            $APPLICATION->SetPageProperty("keywords", $this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_META_KEYWORDS']);
+            
+        //$APPLICATION->SetPageProperty("title", $this->arResult['ELEMENT']['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']);
     }
 }

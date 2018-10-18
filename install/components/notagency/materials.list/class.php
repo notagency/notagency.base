@@ -391,12 +391,20 @@ class MaterialsList extends ComponentsBase
     */
     protected function processElement($element)
     {
+        if (array_key_exists('ACTIVE_FROM', $element)) {
+            $element['DISPLAY_ACTIVE_FROM'] = self::formatDisplayDate($element['ACTIVE_FROM'], $this->arParams['ACTIVE_DATE_FORMAT']);
+        }
+        if (array_key_exists('ACTIVE_TO', $element)) {
+            $element['DISPLAY_ACTIVE_TO'] = self::formatDisplayDate($element['ACTIVE_TO'], $this->arParams['ACTIVE_DATE_FORMAT']);
+        }
+        
         if (array_key_exists('DATE_ACTIVE_FROM', $element)) {
             $element['DISPLAY_ACTIVE_FROM'] = self::formatDisplayDate($element['DATE_ACTIVE_FROM'], $this->arParams['ACTIVE_DATE_FORMAT']);
         }
         if (array_key_exists('DATE_ACTIVE_TO', $element)) {
             $element['DISPLAY_ACTIVE_TO'] = self::formatDisplayDate($element['DATE_ACTIVE_TO'], $this->arParams['ACTIVE_DATE_FORMAT']);
         }
+        
         if ($inheritedPropertyValues = (new \Bitrix\Iblock\InheritedProperty\ElementValues($element['IBLOCK_ID'], $element['ID']))->getValues()) {
             $element['IPROPERTY_VALUES'] = $inheritedPropertyValues;
         }

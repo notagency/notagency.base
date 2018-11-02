@@ -83,7 +83,7 @@ if ($arResult['SUCCESS']) {
                 ?></select><?php
             }
 
-            if (array_key_exists(ToUpper($code), $arResult['FIELD_ERRORS'])) {
+            if (!empty($arResult['FIELD_ERRORS']) and array_key_exists(ToUpper($code), $arResult['FIELD_ERRORS'])) {
                 ShowError($arResult['FIELD_ERRORS'][ToUpper($code)]);
             }
             ?></div><br/><?php

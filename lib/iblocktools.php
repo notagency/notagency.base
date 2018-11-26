@@ -20,14 +20,24 @@ class IblockTools
      * Получить ID инфоблока по коду
      *
      * @param string $code
+     * @param boolean $checkSiteID
      * @return int|bool
      */
-    public static function getIblockId($code)
+    public static function getIblockId($code, $checkSiteID = true)
     {
         if (!empty(self::$iblockId[$code])) {
             return self::$iblockId[$code];
         }
-        if ($iblock = \CIBlock::GetList([], ['CODE' => $code])->fetch()) {
+
+        $arFilter = [
+            'CODE' => $code
+        ];
+
+        if($checkSiteID and !empty(SITE_ID)){
+            $arFilter['SITE_ID'] = SITE_ID;
+        }
+
+        if ($iblock = \CIBlock::GetList([], $arFilter)->fetch()) {
             self::$iblockId[$code] = $iblock['ID'];
             return $iblock['ID'];
         }

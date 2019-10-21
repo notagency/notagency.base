@@ -39,9 +39,13 @@ class FormResultNew extends ComponentsBase
 		if (!$this->needCache()) {
 			$this->arParams['CACHE_TYPE'] = 'N';
 		}
+		
 		if (!empty($this->arParams['WEB_FORM_CODE'])) {
 			$this->formId = $this->getFormId($this->arParams['WEB_FORM_CODE']);
+		}elseif (!empty($this->arParams['WEB_FORM_ID'])){
+		   	$this->formId = $this->arParams['WEB_FORM_ID'];
 		}
+		
 		if (!$this->formId) {
 			throw new \Exception(sprintf('Web form doesn\'t exists with code %s', $this->arParams['WEB_FORM_CODE']));
 		}
